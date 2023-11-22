@@ -13,6 +13,12 @@ The containers should adhere to the best practices for Apptainer compatibility.
 We can write container definitions using as scripts or using Dockerfile (aka Containerfile) format.
 We'll use the Dockerfile format in this guide.
 
+```dockerfile
+FROM ubuntu:22.04
+
+# TODO
+```
+
 
 Building with Buildah
 
