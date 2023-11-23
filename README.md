@@ -1,5 +1,5 @@
 # OCI containers for HPC
-This is a guide for building OCI containers with Buildah, storing the container images to GitHub container registry and using the containers with Apptainer (previously Singularity).
+This is a guide for building OCI containers with [Buildah](https://github.com/containers/buildah), storing the container images to [GitHub Container Registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry) and using the containers with [Apptainer](https://github.com/apptainer/apptainer) (previously Singularity).
 
 
 ## Writing container definitions
@@ -8,7 +8,7 @@ The containers should adhere to the best practices for Apptainer compatibility.
 
 * We should install software into `/opt` or `/usr/local` to make them available for all users.
 * We should not create files to the home directories, `/root` and `/home`.
-* We should clean the temporary directory `/tmp` if we use during the build.
+* We should clean the temporary directory `/tmp` if we create files there during the build.
 * We should assume read-only file system at runtime.
   The software should not create files inside the container at runtime.
 
