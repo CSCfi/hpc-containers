@@ -2,14 +2,15 @@
 Apptainer and Singularity
 Commands `apptainer` and `singularity`
 
-## General principles for writing container definitions for HPC
+
+## General principles
 Install software into `/opt` or `/usr/local` and make it world-readable.
 
 Avoid creating files to the home directories, `/root` and `/home`, or temporary directory `/tmp`.
-If your build creates temporary files, remove them afterwards.
+If your build creates temporary files to these directories, remove them after the build.
 
-The container is read-only at runtime, therefore, make sure that your program does not try to write files inside the container at runtime.
-Instead, write files to the bind mounted directories.
+The container filesystem is read-only at runtime, therefore, make sure that your program does not attempt to write files to the container at runtime.
+Instead, write files to the bind mounted directories with write permission which is the default.
 
 
 ## Container definition file
