@@ -1,1 +1,1 @@
-Notes about building and using containers on HPC clusters.
+Guidelines for building and using containers on HPC clusters.
