@@ -1,6 +1,8 @@
 # HPC Containers
-Apptainer and Singularity
-Commands `apptainer` and `singularity`
+## Scientific application
+In this guide, we provide instruction to containerize a scientific application that consists of software and various dependencies.
+Furthermore, we assume that the application has a command line interface and it can be configured via command line options, environment variables, configuration files or some mix of them.
+Also, we assume that the application runs as a batch processes reading input data from input files and writing output data into output files.
 
 
 ## General principles
