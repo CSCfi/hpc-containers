@@ -1,12 +1,10 @@
-Dockerhub, GitHub container registry
-
-
-# Building container with Apptainer or Singularity
+# Apptainer and Singularity
+## Defining a container
 We have `container.def ` file.
 
 ```singularity
 Bootstrap: docker
-From: ghcr.io/gnu-octave/octave:9.1.0
+From: ubuntu/22.04
 
 %files
     # include files
@@ -15,6 +13,8 @@ From: ghcr.io/gnu-octave/octave:9.1.0
     # run commands, install packages, compile code, etc
 ```
 
+
+## Building container
 Building container create `container.sif` file.
 
 ```bash
@@ -22,9 +22,9 @@ apptainer build container.sif container.def
 ```
 
 
-# Running container with Apptainer or Singularity
+## Running container
 Running commands inside the container
 
 ```bash
-apptainer exec container.sif <command>
+apptainer exec [<flag>] container.sif <command>
 ```
