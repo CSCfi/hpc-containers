@@ -1,4 +1,4 @@
-# OCI containers for HPC
+# OCI-compliant HPC containers
 This is a guide for building OCI containers with [Buildah](https://github.com/containers/buildah), storing the container images to [GitHub Container Registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry) and using the containers with [Apptainer](https://github.com/apptainer/apptainer) or Singularity.
 
 
