@@ -1,0 +1,12 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%files
+    src /opt/src
+    Makefile /opt/Makefile
+
+%post
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update && apt-get install -y bash gcc make
+    cd /opt && make
+    ln -s /opt/build/main /usr/local/bin/average
