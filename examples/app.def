@@ -2,11 +2,11 @@ Bootstrap: docker
 From: ubuntu:22.04
 
 %files
-    src /opt/src
-    Makefile /opt/Makefile
+    app/src /opt/app/src
+    app/Makefile /opt/app/Makefile
 
 %post
     export DEBIAN_FRONTEND=noninteractive
     apt-get update && apt-get install -y bash gcc make
-    cd /opt && make
-    ln -s /opt/build/main /usr/local/bin/average
+    cd /opt/app && make
+    ln -s /opt/app/build/main /usr/local/bin/app
