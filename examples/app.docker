@@ -1,12 +1,9 @@
-Bootstrap: docker
-From: ubuntu:22.04
+FROM ubuntu:22.04
 
-%files
-    app/src /opt/app/src
-    app/Makefile /opt/app/Makefile
+COPY app/src /opt/app/src
+COPY app/Makefile /opt/app/Makefile
 
-%post
-    export DEBIAN_FRONTEND=noninteractive && \
+RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get --yes --no-install-recommends install \
         bash \
@@ -15,8 +12,8 @@ From: ubuntu:22.04
         libc6-dev && \
     apt-get --yes clean && \
     apt-get --yes autoremove && \
-    rm -Rf /var/lib/apt/lists/*
+    rm -Rf /var/lib/apt/lists/* && \
 
-    cd /opt/app && \
+RUN cd /opt/app && \
     make && \
     ln -s /opt/app/build/main /usr/local/bin/app
