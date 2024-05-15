@@ -26,12 +26,14 @@ We can create a symbolic link to `/usr/local/bin` which is on the path by defaul
 Alternatively, you can prepend the directory of the executable to path manually in the environment block.
 
 We can define containers using a definition file.
-
-Apptainer definition files use the `.def` file extension.
+For example, we could have Apptainer definition file named `app.def` as follows:
 
 ```singularity
+# Header
 Bootstrap: docker
 From: ubuntu:22.04
+
+# Sections
 
 %arguments
     # supply build arguments (e.g. version numbers)
@@ -46,15 +48,15 @@ From: ubuntu:22.04
     # define enviroment variables that are available at runtime
 ```
 
-It is recommended to avoid other directives to keep containers simple and easier to convert to OCI container definitions which we cover later.
+We recommend using `%arguments`, `%files`, `%post` and `%environment` sections and avoiding other sections to keep containers simple and easier to convert to OCI container definitions which we discuss later.
 
 
 ## Building containers
 We can build containers from the definition file into container image with `build` subcommand.
-Images have `.sif` file extension.
+For example, we can build `app.sif` container from the `app.def` definition file as follows:
 
 ```bash
-apptainer build <flags> container.sif container.def
+apptainer build <flags> app.sif app.def
 ```
 
 Flags `--build-arg`
@@ -66,7 +68,7 @@ Environment variables `APPTAINER_CACHEDIR` and `APPTAINER_TMPDIR`.
 We can run the containerized application with the `exec` subcommand.
 
 ```bash
-apptainer exec <flags> container.sif app <arguments>
+apptainer exec <flags> app.sif app <arguments>
 ```
 
 We use flags to specify bind mounts and environment variables.
