@@ -18,7 +18,7 @@ FROM ubuntu:22.04
 Building container with Buildah
 
 ```sh
-buildah build --tag ghcr.io/<username>/<name>:<tag> <directory>
+buildah build --tag ghcr.io/<username>/<name>:<tag> -f <dockerfile>
 ```
 
 
