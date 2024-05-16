@@ -27,6 +27,6 @@ From: ubuntu:22.04
     ln -s /opt/appdemo-0.1.0/build/main /usr/local/bin/app
 
 %environment
-    export LC_ALL=en_US.UTF-8
-    export LANG=en_US.UTF-8
-    export LANGUAGE=en_US.UTF-8
+    export LC_ALL=C.UTF-8
+    export LANG=C.UTF-8
+    export LANGUAGE=C.UTF-8
