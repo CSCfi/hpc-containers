@@ -1,6 +1,9 @@
 Bootstrap: docker
 From: ubuntu:22.04
 
+%arguments
+    APP_VERSION=0.1.0
+
 %post
     export DEBIAN_FRONTEND=noninteractive && \
     apt-get --yes update && \
@@ -18,13 +21,13 @@ From: ubuntu:22.04
     apt-get --yes autoremove && \
     rm -Rf /var/lib/apt/lists/*
 
-    # Install appdemo v0.1.0
-    curl --location --output /opt/appdemo-0.1.0.tar.gz https://github.com/jaantollander/appdemo/archive/refs/tags/v0.1.0.tar.gz && \
-    tar xf /opt/appdemo-0.1.0.tar.gz --directory /opt && \
-    rm /opt/appdemo-0.1.0.tar.gz && \
-    cd /opt/appdemo-0.1.0 && \
+    # Install appdemo
+    curl --location --output /opt/appdemo.tar.gz https://github.com/jaantollander/appdemo/archive/refs/tags/v{{ APP_VERSION }}.tar.gz && \
+    tar xf /opt/appdemo.tar.gz --directory /opt && \
+    rm /opt/appdemo.tar.gz && \
+    cd /opt/appdemo-{{ APP_VERSION }} && \
     make && \
-    ln -s /opt/appdemo-0.1.0/build/main /usr/local/bin/app
+    ln -s /opt/appdemo-{{ APP_VERSION }}/build/main /usr/local/bin/app
 
 %environment
     export LC_ALL=C.UTF-8
