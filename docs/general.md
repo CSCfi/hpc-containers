@@ -53,9 +53,11 @@ For example, we can build `app.sif` container from the `app.def` definition file
 apptainer build <flags> app.sif app.def
 ```
 
-Flags `--build-arg`
+We can use the `--build-arg` flag to supply build arguments.
+It will overwrite the default values defined in `%arguments` section.
 
-Environment variables `APPTAINER_CACHEDIR` and `APPTAINER_TMPDIR`.
+It is important that Apptainer creates cache and temporary files to sane locations in HPC environments.
+We can modify them using the `APPTAINER_CACHEDIR` and `APPTAINER_TMPDIR` environment variables.
 
 
 ## Running containers
