@@ -86,7 +86,7 @@ Input data is read from and output is written into bind mounted directories.
 Apptainer will bind mount certain directories by default such as the home directory (`$HOME`), current working directory and the temporary directory (`/tmp`).
 
 
-## Full example
+## Example
 In this example, we install the [appdemo](https://github.com/jaantollander/appdemo) to container.
 
 We have the following Apptainer definition file named `app.def`:
@@ -107,7 +107,8 @@ From: ubuntu:22.04
         bash \
         gcc \
         make \
-        libc6-dev && \
+        libc6-dev \
+        && \
     apt-get --yes clean && \
     apt-get --yes autoremove && \
     rm -Rf /var/lib/apt/lists/*

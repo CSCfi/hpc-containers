@@ -11,7 +11,8 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
         bash \
         gcc \
         make \
-        libc6-dev && \
+        libc6-dev \
+        && \
     apt-get --yes clean && \
     apt-get --yes autoremove && \
     rm -Rf /var/lib/apt/lists/*
