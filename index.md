@@ -1,8 +1,6 @@
 # Guidelines for HPC containers
 Guidelines for building and using containers on HPC clusters.
 
-- [docker and oci](./docker-oci.md)
-
 
 ## Scientific application
 In this guide, we provide instruction to containerize a scientific application that consists of software and various dependencies.
@@ -10,7 +8,7 @@ Furthermore, we assume that the application has a command line interface and it 
 Also, we assume that the application runs as a batch processes reading input data from input files and writing output data into output files.
 
 
-## Defining containers
+## Defining containers with Apptainer
 Apptainer is the primary technology used to run and build HPC containers.
 It was formerly known as Singularity.
 We can use Apptainer via the `apptainer` command.
@@ -50,7 +48,7 @@ From: ubuntu:22.04
 We recommend using `%arguments`, `%files`, `%post` and `%environment` sections and avoiding other sections to keep containers simple and easier to convert to OCI container definitions which we discuss later.
 
 
-## Building containers
+## Building containers with Apptainer
 We can build containers from the definition file into container image with `build` subcommand.
 For example, we can build `app.sif` container from the `app.def` definition file as follows:
 
@@ -65,7 +63,7 @@ It is important that Apptainer creates cache and temporary files to sane locatio
 We can modify them using the `APPTAINER_CACHEDIR` and `APPTAINER_TMPDIR` environment variables.
 
 
-## Running containers
+## Running containers with Apptainer
 We can run the commands within the container using the `exec` subcommand as follows:
 
 ```sh
@@ -91,7 +89,7 @@ Input data is read from and output is written into bind mounted directories.
 Apptainer will bind mount certain directories by default such as the home directory (`$HOME`), current working directory and the temporary directory (`/tmp`).
 
 
-## Example
+## Example with Apptainer
 In this example, we install the [appdemo](https://github.com/jaantollander/appdemo) to container.
 
 We have the following Apptainer definition file named `app.def`:
@@ -161,14 +159,14 @@ Average: 2.00
 ```
 
 
-## Docker and OCI containers for HPC
+## Docker and OCI containers
 In this section, we demonstrate how to use Docker and Podman with Apptainer.
 We use Docker to create containers in Docker format and Podman to create container in OCI format.
 We show how to them convert these containers into the Apptainer containers.
 We also show how to store containers into GitHub container registry.
 
 
-## Container definition
+## Defining containers in Dockerfile format
 We can define container for Docker and Podman using the Dockerfile format.
 The containers should adhere to the best practices for Apptainer compatibility.
 
@@ -227,7 +225,7 @@ apptainer build app.sif docker-archive://app.tar
 
 
 ## Building with Podman
-Building container with Docker or Podman
+Building container with Podman
 
 ```sh
 podman build --tag localhost/app:0.1.0 --file app.dockerfile .
@@ -241,20 +239,27 @@ podman save --output app.tar localhost/app:0.1.0
 apptainer build app.sif docker-archive://app.tar
 ```
 
-Pushing to GitHub container registry
+
+## Pushing container to container registry
+Pushing to container registry such as GitHub Container Registry.
 
 ```sh
-podman login -u <username> ghcr.io  # supply an access token
+docker login -u <username> ghcr.io  # supply an access token
+#podman login -u <username> ghcr.io  # supply an access token
 ```
 
 ```sh
-podman tag localhost/app:0.1.0 ghcr.io/<username>/app:0.1.0
+docker localhost/app:0.1.0 ghcr.io/<username>/app:0.1.0
+#podman tag localhost/app:0.1.0 ghcr.io/<username>/app:0.1.0
 ```
 
 ```sh
-podman push ghcr.io/<username>/app:0.1.0
+docker push ghcr.io/<username>/app:0.1.0
+#podman push ghcr.io/<username>/app:0.1.0
 ```
 
+
+## Pulling containers from container registry with Apptainer
 Usage with Apptainer
 
 ```sh
