@@ -1,18 +1,15 @@
 # Docker and OCI containers for HPC
-<!--
-This is a guide for building OCI containers with [Buildah](https://github.com/containers/buildah), storing the container images to [GitHub Container Registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry) and using the containers with [Apptainer](https://github.com/apptainer/apptainer) or Singularity.
--->
-
-The containers should adhere to the best practices for Apptainer compatibility.
-We can write container definitions using as scripts or using Dockerfile format.
-We'll use the Dockerfile format in this guide.
-
-We use Docker for Docker containers.
-We use Podman for OCI containers.
+In this section, we demonstrate how to use Docker and Podman with Apptainer.
+We use Docker to create containers in Docker format and Podman to create container in OCI format.
+We show how to them convert these containers into the Apptainer containers.
+We also show how to store containers into GitHub container registry.
 
 
 ## Container definition
-We have the following Docker definition file named `app.docker`:
+We can define container for Docker and Podman using the Dockerfile format.
+The containers should adhere to the best practices for Apptainer compatibility.
+
+We have the following Docker definition file named `app.dockerfile`:
 
 ```dockerfile
 FROM ubuntu:22.04
@@ -48,10 +45,10 @@ ENV LC_ALL=C.UTF-8 \
 
 
 ## Building with Docker
-Building with Docker
+We can build the container with Docker as follows:
 
 ```sh
-docker build --tag localhost/app:0.1.0 --file app.docker .
+docker build --tag localhost/app:0.1.0 --file app.dockerfile .
 ```
 
 ```sh
@@ -67,7 +64,7 @@ apptainer build app.sif docker-archive://app.tar
 Building container with Docker or Podman
 
 ```sh
-podman build --tag app:0.1.0 --file app.docker --format oci
+podman build --tag localhost/app:0.1.0 --file app.dockerfile .
 ```
 
 ```sh
@@ -77,8 +74,6 @@ podman save --output app.tar localhost/app:0.1.0
 ```sh
 apptainer build app.sif docker-archive://app.tar
 ```
-
----
 
 Pushing to GitHub container registry
 

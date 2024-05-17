@@ -1,4 +1,4 @@
 Guidelines for building and using containers on HPC clusters.
 
 - [general](./docs/general.md)
-- [oci](./docs/oci.md)
+- [docker and oci](./docs/docker-oci.md)
