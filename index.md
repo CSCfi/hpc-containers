@@ -12,6 +12,7 @@ Also, we assume that the application runs as a batch processes reading input dat
 Apptainer is the primary technology used to run and build HPC containers.
 It was formerly known as Singularity.
 We can use Apptainer via the `apptainer` command.
+For complete reference to Apptainer, we recommend the [official documentation](https://apptainer.org/docs/user/main/index.html).
 
 We follow general principles defining HPC containers.
 Install software into `/opt` or `/usr/local` and make it world-readable.
@@ -45,7 +46,7 @@ From: ubuntu:22.04
     # define enviroment variables that are available at runtime
 ```
 
-We recommend using `%arguments`, `%files`, `%post` and `%environment` sections and avoiding other sections to keep containers simple and easier to convert to OCI container definitions which we discuss later.
+We recommend using `From`, `Bootstrap`, `%arguments`, `%files`, `%post` and `%environment` sections and avoiding other sections to keep containers simple and easier to convert to OCI container definitions which we discuss later.
 
 
 ## Building containers with Apptainer
@@ -168,7 +169,7 @@ We also show how to store containers into GitHub container registry.
 
 ## Defining containers in Dockerfile format
 We can define container for Docker and Podman using the Dockerfile format.
-The containers should adhere to the best practices for Apptainer compatibility.
+For complete reference to dockerfile format, we recommend the [official documentation](https://docs.docker.com/reference/dockerfile/).
 
 We have the following Docker definition file named `app.dockerfile`:
 
@@ -206,6 +207,9 @@ ENV LC_ALL=C.UTF-8 \
     LANG=C.UTF-8 \
     LANGUAGE=C.UTF-8
 ```
+
+The containers should adhere to the best practices for Apptainer compatibility.
+We recommend primarily using `FROM`, `ARG`, `COPY`, and `RUN` instructions.
 
 
 ## Building with Docker
