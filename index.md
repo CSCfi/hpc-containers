@@ -26,7 +26,7 @@ Alternatively, you can prepend the directory of the executable to path manually 
 We can define containers using a definition file.
 For example, we could have Apptainer definition file named `app.def` as follows:
 
-```singularity
+```text
 # Header
 Bootstrap: docker
 From: ubuntu:22.04
@@ -95,7 +95,7 @@ In this example, we install the [appdemo](https://github.com/jaantollander/appde
 
 We have the following Apptainer definition file named `app.def`:
 
-```singularity
+```text
 Bootstrap: docker
 From: ubuntu:22.04
 
