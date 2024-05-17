@@ -49,7 +49,7 @@ We recommend using `%arguments`, `%files`, `%post` and `%environment` sections a
 We can build containers from the definition file into container image with `build` subcommand.
 For example, we can build `app.sif` container from the `app.def` definition file as follows:
 
-```bash
+```sh
 apptainer build <flags> app.sif app.def
 ```
 
@@ -63,7 +63,7 @@ We can modify them using the `APPTAINER_CACHEDIR` and `APPTAINER_TMPDIR` environ
 ## Running containers
 We can run the commands within the container using the `exec` subcommand as follows:
 
-```bash
+```sh
 apptainer exec <flags> app.sif <command> <arguments>
 ```
 
@@ -130,7 +130,7 @@ From: ubuntu:22.04
 
 Next, we build the container
 
-```bash
+```sh
 apptainer build app.sif app.def
 ```
 
@@ -144,7 +144,7 @@ Input file `input.txt`
 
 Now we can run it
 
-```bash
+```sh
 apptainer exec app.sif app input.txt output.txt
 ```
 
