@@ -1,18 +1,28 @@
 # Guidelines for containerizing scientific applications for HPC clusters
-## Scientific application
-In this guide, we provide instruction to containerize a scientific application that consists of software and various dependencies.
-Furthermore, we assume that the application has a command line interface and it can be configured via command line options, environment variables, configuration files or some mix of them.
-Also, we assume that the application runs as a batch processes reading input data from input files and writing output data into output files.
+## General principles
+<!-- guidelines and prerequisities -->
+These guidelines provide instructions to containerize scientific applications and manager the containers in consistent manner.
+We assume basic knowledge about Linux, shell scripting, and command line interfaces.
 
+<!-- scientific application -->
+A scientific application consists the application software and various software dependencies.
+We assume that the application has a command line interface and it can be configured via command line options, environment variables, configuration files or some mix of them.
+We focus on scientific applications that run as batch processes on HPC clusters, reading input data from input files and writing output data into output files.
 
-## Defining containers with Apptainer
-Apptainer is the primary technology used to run and build HPC containers.
+<!-- container technologies -->
+Apptainer is the primary technology used to run and build containers for HPC clusters.
 Apptainer was formerly known as Singularity, but the project was renamed when it moved under Linux foundation.
-Sylab maintains another fork of Singularity named SingularityCE which has small implementation differences compared to Apptainer.
+Sylabs maintains another fork of Singularity named SingularityCE which has small implementation differences compared to Apptainer.
+We can also use Docker and Podman to build containers for HPC clusters.
 
-We can use Apptainer via the `apptainer` command.
-For complete reference to Apptainer, we recommend the [official documentation](https://apptainer.org/docs/user/main/index.html).
+<!-- stages of containerization -->
+We divide containerization into three stages:
 
+1. Building containers (definition file, build command)
+2. Running containers
+3. Managing containers (version controlling container definitions, versioning containers, storing containers into container registry, automatically building containers)
+
+<!-- general principles for building containers -->
 We follow general principles defining HPC containers.
 Install software into `/opt` or `/usr/local` and make it world-readable.
 Avoid creating files to the home directories, `/root` and `/home`, or temporary directory `/tmp`.
@@ -24,6 +34,8 @@ Alternatively, you can prepend the directory of the executable to path manually 
 
 Shell commands at build time are executed with `/bin/sh`.
 
+
+## Defining containers with Apptainer
 We can define containers using a definition file.
 For example, we could have Apptainer definition file named `app.def` as follows:
 
@@ -49,6 +61,9 @@ From: ubuntu:22.04
 
 We recommend to primarily use `From`, `Bootstrap`, `%arguments`, `%files`, `%post` and `%environment` keywords.
 It is best to avoid other keywords to keep containers simple and easier to convert to OCI container definitions which we discuss later.
+
+For complete reference to Apptainer, we recommend the [official documentation](https://apptainer.org/docs/user/main/index.html).
+We can use Apptainer via the `apptainer` command.
 
 
 ## Building containers with Apptainer
