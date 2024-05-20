@@ -146,17 +146,18 @@ From: ubuntu:22.04
         && \
     apt-get --yes clean && \
     apt-get --yes autoremove && \
-    rm -Rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/*
 
     # Install appdemo
     APP_VERSION=0.1.0 && \
-    cd /opt && \
+    mkdir -p /tmp/build && \
+    cd /tmp/build && \
     curl --location --output appdemo.tar.gz https://github.com/jaantollander/appdemo/archive/refs/tags/v${APP_VERSION}.tar.gz && \
     tar -xf appdemo.tar.gz && \
-    rm appdemo.tar.gz && \
     cd appdemo-${APP_VERSION} && \
     make && \
-    ln -s /opt/appdemo-${APP_VERSION}/build/main /usr/local/bin/app
+    mv build/main /usr/local/bin/app && \
+    rm -rf /tmp/build
 ```
 
 Next, we build the container
@@ -219,17 +220,18 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
         && \
     apt-get --yes clean && \
     apt-get --yes autoremove && \
-    rm -Rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/*
 
 # Install appdemo v0.1.0
 RUN APP_VERSION=0.1.0 && \
-    cd /opt && \
+    mkdir -p /tmp/build && \
+    cd /tmp/build && \
     curl --location --output appdemo.tar.gz https://github.com/jaantollander/appdemo/archive/refs/tags/v${APP_VERSION}.tar.gz && \
     tar -xf appdemo.tar.gz && \
-    rm appdemo.tar.gz && \
     cd appdemo-${APP_VERSION} && \
     make && \
-    ln -s /opt/appdemo-${APP_VERSION}/build/main /usr/local/bin/app
+    mv build/main /usr/local/bin/app && \
+    rm -rf /tmp/build
 ```
 
 The containers should adhere to the best practices for Apptainer compatibility.
