@@ -1,8 +1,8 @@
 # Guidelines for containerizing scientific applications for HPC clusters
 ## General principles
-<!-- guidelines and prerequisities -->
-These guidelines provide instructions to containerize scientific applications and manager the containers in consistent manner.
-We assume basic knowledge about Linux, shell scripting, and command line interfaces.
+<!-- establish context and prerequisities -->
+These guidelines provide general instructions and concrete examples to containerize scientific applications and manager the containers in consistent manner.
+We assume basic knowledge about Linux operating system and shell scripting, and how to build and installing software on Linux.
 
 <!-- scientific application -->
 A scientific application consists the application software and various software dependencies.
@@ -14,16 +14,17 @@ Apptainer is the primary technology used to run and build containers for HPC clu
 Apptainer was formerly known as Singularity, but the project was renamed when it moved under Linux foundation.
 Sylabs maintains another fork of Singularity named SingularityCE which has small implementation differences compared to Apptainer.
 We can also use Docker and Podman to build containers for HPC clusters.
+We focus on Apptainer, Docker and Podman.
 
-<!-- stages of containerization -->
-We divide containerization into three stages:
+<!-- containerization activities -->
+We break down containerization into three acticities:
 
-1. Building containers (definition file, build command)
-2. Running containers
-3. Managing containers (version controlling container definitions, versioning containers, storing containers into container registry, automatically building containers)
+1. Defining and building containers of scientific applications for HPC clusters.
+2. Running scientific applications from containers on HPC clusters.
+3. Managing container definitions, images and build processes.
 
-<!-- general principles for building containers -->
-We follow general principles defining HPC containers.
+<!-- general principles for defining and building containers -->
+General principles defining containers.
 Install software into `/opt` or `/usr/local` and make it world-readable.
 Avoid creating files to the home directories, `/root` and `/home`, or temporary directory `/tmp`.
 If your build creates temporary files to these directories, remove them after the build.
@@ -33,6 +34,10 @@ We can create a symbolic link to `/usr/local/bin` which is on the path by defaul
 Alternatively, you can prepend the directory of the executable to path manually in the environment block.
 
 Shell commands at build time are executed with `/bin/sh`.
+
+Typical build section does ...
+
+<!-- managing containers (version controlling container definitions, versioning containers, storing containers into container registry, automatically building containers) -->
 
 
 ## Defining containers with Apptainer
