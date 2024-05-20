@@ -8,8 +8,8 @@ We assume basic knowledge about Linux operating system and shell scripting, and 
 A scientific application consists the application software and various software dependencies.
 We assume that the application has a command line interface and it can be configured via command line options, environment variables, configuration files or some mix of them.
 We focus on scientific applications that run as batch processes on HPC clusters, reading input data from input files and writing output data into output files.
-We assume that the application is developed using version control system (Git) such that we can identify specific version of the software from version tags or hashes.
-We assume that the source-code is hosted and the software releases on the web, for example using a platform like GitHub and GitLab.
+We assume that the application is developed using version control system such as Git so that we can install specific version of the software.
+We assume that the source-code is hosted and the software releases on the web, for example using a platform like GitHub and GitLab, such that we can download it.
 
 <!-- container technologies -->
 Apptainer is the primary technology used to run and build containers for HPC clusters.
