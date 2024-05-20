@@ -1,7 +1,4 @@
-# Guidelines for HPC containers
-Guidelines for building and using containers on HPC clusters.
-
-
+# Guidelines for containerizing scientific applications for HPC clusters
 ## Scientific application
 In this guide, we provide instruction to containerize a scientific application that consists of software and various dependencies.
 Furthermore, we assume that the application has a command line interface and it can be configured via command line options, environment variables, configuration files or some mix of them.
@@ -10,7 +7,9 @@ Also, we assume that the application runs as a batch processes reading input dat
 
 ## Defining containers with Apptainer
 Apptainer is the primary technology used to run and build HPC containers.
-It was formerly known as Singularity.
+Apptainer was formerly known as Singularity, but the project was renamed when it moved under Linux foundation.
+Sylab maintains another fork of Singularity named SingularityCE which has small implementation differences compared to Apptainer.
+
 We can use Apptainer via the `apptainer` command.
 For complete reference to Apptainer, we recommend the [official documentation](https://apptainer.org/docs/user/main/index.html).
 
@@ -22,6 +21,8 @@ If your build creates temporary files to these directories, remove them after th
 We can add executables to path (the `$PATH` environment variable) in few different ways.
 We can create a symbolic link to `/usr/local/bin` which is on the path by default.
 Alternatively, you can prepend the directory of the executable to path manually in the environment block.
+
+Shell commands at build time are executed with `/bin/sh`.
 
 We can define containers using a definition file.
 For example, we could have Apptainer definition file named `app.def` as follows:
@@ -46,7 +47,8 @@ From: ubuntu:22.04
     # define enviroment variables that are available at runtime
 ```
 
-We recommend using `From`, `Bootstrap`, `%arguments`, `%files`, `%post` and `%environment` sections and avoiding other sections to keep containers simple and easier to convert to OCI container definitions which we discuss later.
+We recommend to primarily use `From`, `Bootstrap`, `%arguments`, `%files`, `%post` and `%environment` keywords.
+It is best to avoid other keywords to keep containers simple and easier to convert to OCI container definitions which we discuss later.
 
 
 ## Building containers with Apptainer
@@ -168,8 +170,10 @@ We also show how to store containers into GitHub container registry.
 
 
 ## Defining containers in Dockerfile format
-We can define container for Docker and Podman using the Dockerfile format.
+We can define containers for Docker and Podman using the dockerfile format.
 For complete reference to dockerfile format, we recommend the [official documentation](https://docs.docker.com/reference/dockerfile/).
+
+We recommend to name containers files with name and extension in lowercase, such as `app.dockefiler`, rather than simply `Dockerfile` because complex scientific software may require multiple container definition files.
 
 We have the following Docker definition file named `app.dockerfile`:
 
@@ -209,7 +213,8 @@ ENV LC_ALL=C.UTF-8 \
 ```
 
 The containers should adhere to the best practices for Apptainer compatibility.
-We recommend primarily using `FROM`, `ARG`, `COPY`, and `RUN` instructions.
+We recommend primarily using `FROM`, `ARG`, `COPY`, `RUN`, and `ENV` instructions.
+We should not use the `USER` intructions.
 
 
 ## Building with Docker
@@ -225,6 +230,14 @@ docker save --output app.tar localhost/app:0.1.0
 
 ```sh
 apptainer build app.sif docker-archive://app.tar
+```
+
+Pushing to container registry such as GitHub Container Registry.
+
+```sh
+docker login --username <username> ghcr.io  # supply an access token
+docker localhost/app:0.1.0 ghcr.io/<username>/app:0.1.0
+docker push ghcr.io/<username>/app:0.1.0
 ```
 
 
@@ -243,28 +256,15 @@ podman save --output app.tar localhost/app:0.1.0
 apptainer build app.sif docker-archive://app.tar
 ```
 
-
-## Pushing container to container registry
-Pushing to container registry such as GitHub Container Registry.
-
 ```sh
-docker login -u <username> ghcr.io  # supply an access token
-#podman login -u <username> ghcr.io  # supply an access token
-```
-
-```sh
-docker localhost/app:0.1.0 ghcr.io/<username>/app:0.1.0
-#podman tag localhost/app:0.1.0 ghcr.io/<username>/app:0.1.0
-```
-
-```sh
-docker push ghcr.io/<username>/app:0.1.0
-#podman push ghcr.io/<username>/app:0.1.0
+podman login --username <username> ghcr.io  # supply an access token
+podman tag localhost/app:0.1.0 ghcr.io/<username>/app:0.1.0
+podman push ghcr.io/<username>/app:0.1.0
 ```
 
 
 ## Pulling containers from container registry with Apptainer
-Usage with Apptainer
+We can pull Docker and OCI containers with Apptainer as follows:
 
 ```sh
 apptainer pull app.sif docker://ghcr.io/<username>/app:0.1.0
