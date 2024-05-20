@@ -8,36 +8,45 @@ We assume basic knowledge about Linux operating system and shell scripting, and 
 A scientific application consists the application software and various software dependencies.
 We assume that the application has a command line interface and it can be configured via command line options, environment variables, configuration files or some mix of them.
 We focus on scientific applications that run as batch processes on HPC clusters, reading input data from input files and writing output data into output files.
+We assume that the application is developed using version control system (Git) such that we can identify specific version of the software from version tags or hashes.
+We assume that the source-code is hosted and the software releases on the web, for example using a platform like GitHub and GitLab.
 
 <!-- container technologies -->
 Apptainer is the primary technology used to run and build containers for HPC clusters.
 Apptainer was formerly known as Singularity, but the project was renamed when it moved under Linux foundation.
 Sylabs maintains another fork of Singularity named SingularityCE which has small implementation differences compared to Apptainer.
 We can also use Docker and Podman to build containers for HPC clusters.
-We focus on Apptainer, Docker and Podman.
+We cover Apptainer, Docker and Podman.
 
 <!-- containerization activities -->
 We break down containerization into three acticities:
 
 1. Defining and building containers of scientific applications for HPC clusters.
+   We explain how to create container definitions using the Apptainer definition file and build them using Apptainer.
+   Furthermore, we show how to define containers using the Dockerfile format and build them using Docker and Podman.
+
 2. Running scientific applications from containers on HPC clusters.
+
 3. Managing container definitions, images and build processes.
+   We cover version controlling container definitions, versioning containers, storing containers into container registry and automatically building containers.
 
 <!-- general principles for defining and building containers -->
 General principles defining containers.
+
+**Software location:**
 Install software into `/opt` or `/usr/local` and make it world-readable.
 Avoid creating files to the home directories, `/root` and `/home`, or temporary directory `/tmp`.
 If your build creates temporary files to these directories, remove them after the build.
 
+**Path:**
 We can add executables to path (the `$PATH` environment variable) in few different ways.
 We can create a symbolic link to `/usr/local/bin` which is on the path by default.
-Alternatively, you can prepend the directory of the executable to path manually in the environment block.
+Alternatively, you can prepend the directory of the executable to path manually in the container definition.
 
-Shell commands at build time are executed with `/bin/sh`.
+Shell commands for building containers are executed with `/bin/sh`.
 
-Typical build section does ...
-
-<!-- managing containers (version controlling container definitions, versioning containers, storing containers into container registry, automatically building containers) -->
+<!-- installing with package manager steps: upgrade, install packages, clean cache -->
+<!-- installing from source steps:: make temp, download, build, install, clean temp -->
 
 
 ## Defining containers with Apptainer
@@ -148,11 +157,6 @@ From: ubuntu:22.04
     cd appdemo-${APP_VERSION} && \
     make && \
     ln -s /opt/appdemo-${APP_VERSION}/build/main /usr/local/bin/app
-
-%environment
-    export LC_ALL=C.UTF-8
-    export LANG=C.UTF-8
-    export LANGUAGE=C.UTF-8
 ```
 
 Next, we build the container
@@ -226,10 +230,6 @@ RUN APP_VERSION=0.1.0 && \
     cd appdemo-${APP_VERSION} && \
     make && \
     ln -s /opt/appdemo-${APP_VERSION}/build/main /usr/local/bin/app
-
-ENV LC_ALL=C.UTF-8 \
-    LANG=C.UTF-8 \
-    LANGUAGE=C.UTF-8
 ```
 
 The containers should adhere to the best practices for Apptainer compatibility.

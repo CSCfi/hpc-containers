@@ -26,7 +26,3 @@ RUN APP_VERSION=0.1.0 && \
     cd appdemo-${APP_VERSION} && \
     make && \
     ln -s /opt/appdemo-${APP_VERSION}/build/main /usr/local/bin/app
-
-ENV LC_ALL=C.UTF-8 \
-    LANG=C.UTF-8 \
-    LANGUAGE=C.UTF-8

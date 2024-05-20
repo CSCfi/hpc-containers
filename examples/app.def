@@ -28,8 +28,3 @@ From: ubuntu:22.04
     cd appdemo-${APP_VERSION} && \
     make && \
     ln -s /opt/appdemo-${APP_VERSION}/build/main /usr/local/bin/app
-
-%environment
-    export LC_ALL=C.UTF-8
-    export LANG=C.UTF-8
-    export LANGUAGE=C.UTF-8
