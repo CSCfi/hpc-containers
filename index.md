@@ -4,6 +4,8 @@
 These guidelines provide general principles and concrete examples to containerize scientific applications and consistently manage the containers.
 We assume basic knowledge about the Linux operating system and shell scripting, and how to build and install software on Linux.
 
+<!-- define the scope of these guidelines -->
+
 <!-- scientific application -->
 A scientific application consists of the application software and various software dependencies.
 We assume that the application has a command line interface and it can be configured via command line options, environment variables, configuration files, or some mix of them.
@@ -36,8 +38,25 @@ General principles defining containers.
 **Defining containers:**
 We define containers using definition files.
 
-* Apptainer definition files (`<name>.def`)
-* Dockerfile (`<name>.dockerfile`) to define containers.
+<!--
+* define build arguments and default values for them
+* copy files from host machine to the container
+* run shell commands to build the container
+* define enviroment variables that are available at runtime
+-->
+
+1. Apptainer definition files.
+We should name file using the `.def` extension.
+We recommend to primarily use `From`, `Bootstrap`, `%arguments`, `%files`, `%post`, `%environment` and `%labels` keywords.
+It is best to avoid other keywords to keep containers simple and easier to convert to OCI container definitions which we discuss later.
+
+2. Dockerfile to define containers.
+We can define containers for Docker and Podman using the dockerfile format.
+For complete reference to dockerfile format, we recommend the [official documentation](https://docs.docker.com/reference/dockerfile/).
+We recommend to name containers files with name and extension in lowercase, such as `app.dockefiler`, rather than simply `Dockerfile` because complex scientific software may require multiple container definition files.
+The containers should adhere to the best practices for Apptainer compatibility.
+We recommend primarily using `FROM`, `ARG`, `COPY`, `RUN`, `ENV` and `LABEL` instructions.
+We should not use the `USER` intructions.
 
 **Software location:**
 Install software into `/opt` or `/usr/local` and make it world-readable.
@@ -60,29 +79,6 @@ We cover version controlling container definitions, versioning containers, stori
 
 
 ## Defining containers with Apptainer
-We can define containers using a definition file.
-For example, we could have Apptainer definition file named `app.def` as follows:
-
-```text
-Bootstrap: docker
-From: ubuntu:22.04
-
-%arguments
-    # define build arguments and default values for them
-
-%files
-    # copy files from host machine to the container
-
-%post
-    # run shell commands to build the container
-
-%environment
-    # define enviroment variables that are available at runtime
-```
-
-We recommend to primarily use `From`, `Bootstrap`, `%arguments`, `%files`, `%post` and `%environment` keywords.
-It is best to avoid other keywords to keep containers simple and easier to convert to OCI container definitions which we discuss later.
-
 For complete reference to Apptainer, we recommend the [official documentation](https://apptainer.org/docs/user/main/index.html).
 We can use Apptainer via the `apptainer` command.
 
@@ -194,12 +190,7 @@ Average: 2.00
 ```
 
 
-## Defining containers in Dockerfile format
-We can define containers for Docker and Podman using the dockerfile format.
-For complete reference to dockerfile format, we recommend the [official documentation](https://docs.docker.com/reference/dockerfile/).
-
-We recommend to name containers files with name and extension in lowercase, such as `app.dockefiler`, rather than simply `Dockerfile` because complex scientific software may require multiple container definition files.
-
+## Dockerfile example
 We have the following Docker definition file named `app.dockerfile`:
 
 ```dockerfile
@@ -259,7 +250,7 @@ apptainer build app.sif docker-archive://app.tar
 Pushing to container registry such as GitHub Container Registry.
 
 ```sh
-docker login --username <username> ghcr.io  # supply an access token
+docker login --username <username> ghcr.io  # will prompt for an access token
 docker localhost/app:0.1.0 ghcr.io/<username>/app:0.1.0
 docker push ghcr.io/<username>/app:0.1.0
 ```
@@ -285,7 +276,7 @@ apptainer build app.sif docker-archive://app.tar
 Pushing to container registry such as GitHub Container Registry.
 
 ```sh
-podman login --username <username> ghcr.io  # supply an access token
+podman login --username <username> ghcr.io  # will prompt for an access token
 podman tag localhost/app:0.1.0 ghcr.io/<username>/app:0.1.0
 podman push ghcr.io/<username>/app:0.1.0
 ```
