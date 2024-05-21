@@ -1,7 +1,7 @@
 # Guidelines for containerizing scientific applications for HPC clusters
 ## Introduction
 <!-- establish context and prerequisities -->
-These guidelines provide general instructions and concrete examples to containerize scientific applications and consistently manage the containers.
+These guidelines provide general principles and concrete examples to containerize scientific applications and consistently manage the containers.
 We assume basic knowledge about the Linux operating system and shell scripting, and how to build and install software on Linux.
 
 <!-- scientific application -->
@@ -17,7 +17,10 @@ Apptainer was formerly known as Singularity, but it was renamed to Apptainer whe
 Sylabs maintains another fork of Singularity named SingularityCE, which has minor implementation differences compared to Apptainer.
 The command line interface between Apptainer and Singularity is similar, and we can use them interchangeably.
 Furthermore, we can use Docker to build Docker containers and Podman to build OCI containers that we can run on HPC clusters using Apptainer.
+Internally, Podman uses Buildah to build OCI containers and it is possible to use Buildah directly to build container is necessary.
 
+
+## General principles
 <!-- containerization activities -->
 We break down containerization into three acticities:
 
@@ -25,10 +28,16 @@ We break down containerization into three acticities:
 2. Running scientific applications from containers on HPC clusters.
 3. Managing container definitions, images and build processes.
 
+We discuss about the general principles and show concrete examples for each of the activities.
 
-## General principles
 <!-- general principles for defining and building containers -->
 General principles defining containers.
+
+**Defining containers:**
+We define containers using definition files.
+
+* Apptainer definition files (`<name>.def`)
+* Dockerfile (`<name>.dockerfile`) to define containers.
 
 **Software location:**
 Install software into `/opt` or `/usr/local` and make it world-readable.
@@ -40,17 +49,12 @@ We can add executables to path (the `$PATH` environment variable) in few differe
 We can create a symbolic link to `/usr/local/bin` which is on the path by default.
 Alternatively, you can prepend the directory of the executable to path manually in the container definition.
 
+**Build scripts:**
 Shell commands for building containers are executed with `/bin/sh`.
 
-<!-- installing with package manager steps: upgrade, install packages, clean cache -->
-<!-- installing from source steps:: make temp, download, build, install, clean temp -->
-
 <!--
-We explain how to create container definitions using the Apptainer definition file and build them using Apptainer.
-Furthermore, we show how to define containers using the Dockerfile format and build them using Docker and Podman.
--->
-
-<!--
+installing with package manager steps: upgrade, install packages, clean cache
+installing from source steps:: make temp, download, build, install, clean temp
 We cover version controlling container definitions, versioning containers, storing containers into container registry and automatically building containers.
 -->
 
@@ -60,11 +64,8 @@ We can define containers using a definition file.
 For example, we could have Apptainer definition file named `app.def` as follows:
 
 ```text
-# Header
 Bootstrap: docker
 From: ubuntu:22.04
-
-# Sections
 
 %arguments
     # define build arguments and default values for them
@@ -127,7 +128,7 @@ Input data is read from and output is written into bind mounted directories.
 Apptainer will bind mount certain directories by default such as the home directory (`$HOME`), current working directory and the temporary directory (`/tmp`).
 
 
-## Example with Apptainer
+## Apptainer example
 In this example, we install the [appdemo](https://github.com/jaantollander/appdemo) to container.
 
 We have the following Apptainer definition file named `app.def`:
@@ -193,13 +194,6 @@ Average: 2.00
 ```
 
 
-## Docker and OCI containers
-In this section, we demonstrate how to use Docker and Podman with Apptainer.
-We use Docker to create containers in Docker format and Podman to create container in OCI format.
-We show how to them convert these containers into the Apptainer containers.
-We also show how to store containers into GitHub container registry.
-
-
 ## Defining containers in Dockerfile format
 We can define containers for Docker and Podman using the dockerfile format.
 For complete reference to dockerfile format, we recommend the [official documentation](https://docs.docker.com/reference/dockerfile/).
@@ -245,21 +239,23 @@ We recommend primarily using `FROM`, `ARG`, `COPY`, `RUN`, and `ENV` instruction
 We should not use the `USER` intructions.
 
 
-## Building with Docker
+## Docker example
+### Building the container
 We can build the container with Docker as follows:
 
 ```sh
 docker build --tag localhost/app:0.1.0 --file app.dockerfile .
 ```
 
-```sh
-docker save --output app.tar localhost/app:0.1.0
-```
+### Converting the container
+Converting Docker container into Apptainer container.
 
 ```sh
+docker save --output app.tar localhost/app:0.1.0
 apptainer build app.sif docker-archive://app.tar
 ```
 
+### Pushing container to container registry
 Pushing to container registry such as GitHub Container Registry.
 
 ```sh
@@ -269,20 +265,24 @@ docker push ghcr.io/<username>/app:0.1.0
 ```
 
 
-## Building with Podman
+## Podman example
+### Building the container
 Building container with Podman
 
 ```sh
 podman build --tag localhost/app:0.1.0 --file app.dockerfile .
 ```
 
-```sh
-podman save --output app.tar localhost/app:0.1.0
-```
+### Converting the container
+Converting OCI container into Apptainer container.
 
 ```sh
+podman save --output app.tar localhost/app:0.1.0
 apptainer build app.sif docker-archive://app.tar
 ```
+
+### Pushing containers to container registry
+Pushing to container registry such as GitHub Container Registry.
 
 ```sh
 podman login --username <username> ghcr.io  # supply an access token
