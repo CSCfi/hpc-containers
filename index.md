@@ -35,11 +35,10 @@ We break down containerization into three acticities:
 We discuss about the general principles and show concrete examples for each of the activities.
 
 
-### Defining containers
-**Definition files:**
+### Defining and building containers
 We define containers using definition files.
 
-<!--
+<!-- TODO:
 * define build arguments and default values for them
 * copy files from host machine to the container
 * run shell commands to build the container
@@ -50,6 +49,7 @@ We define containers using definition files.
 We should name file using the `.def` extension.
 We recommend to primarily use `From`, `Bootstrap`, `%arguments`, `%files`, `%post`, `%environment` and `%labels` keywords.
 It is best to avoid other keywords to keep containers simple and easier to convert to OCI container definitions which we discuss later.
+We can build apptainer containers using `apptainer build`
 
 2. Dockerfile to define containers.
 We can define containers for Docker and Podman using the dockerfile format.
@@ -59,50 +59,35 @@ The containers should adhere to the best practices for Apptainer compatibility.
 We recommend primarily using `FROM`, `ARG`, `COPY`, `RUN`, `ENV` and `LABEL` instructions.
 We should not use the `USER` intruction.
 For complete reference to dockerfile format, we recommend the [Dockerfile documentation](https://docs.docker.com/reference/dockerfile/).
+We can build containers using `docker build` and `podman build`.
 
-**Software location:**
 Install software into `/opt` or `/usr/local` and make it world-readable.
 Avoid creating files to the home directories, `/root` and `/home`, or temporary directory `/tmp`.
 If your build creates temporary files to these directories, remove them after the build.
 
-**Path:**
 We can add executables to path (the `$PATH` environment variable) in few different ways.
 We can create a symbolic link to `/usr/local/bin` which is on the path by default.
 Alternatively, you can prepend the directory of the executable to path manually in the container definition.
 
-**Build scripts:**
-Shell commands for building containers are executed with `/bin/sh`.
+Shell commands for building containers are executed with `/bin/sh` by default.
 
-If possible, avoid using `%files` or `COPY` to add applications or dependencies to the container.
-Instead download the application in `%post` or `RUN` via the network.
+Avoid copying files from host to container with `%files` or `COPY`.
+Instead download dependencies via the network in `%post` or `RUN`.
+<!-- TODO: explain why -->
 
-Avoid using `%runscript`, `%startscript`, `CMD` or `ENTRYPOINT`.
+Avoid using runscripts such as `%runscript`, `%startscript`, `CMD` or `ENTRYPOINT`.
 Instead, use `apptainer exec` to explictly run the application in the container.
+<!-- TODO: explain why -->
 
-<!--
-installing with package manager steps: upgrade, install packages, clean cache
-installing from source steps:: make temp, download, build, install, clean temp
-We cover version controlling container definitions, versioning containers, storing containers into container registry and automatically building containers.
--->
+We can use build arguments to specify software versions when changing the version does not require adding control flow to the build scripts.
+We can specify a default value in `%arguments` or `ARG` or using the `--build-arg` flag to supply build arguments which overrides the default values in definition file.
 
-
-### Building containers with Apptainer
-We can build containers from the definition file into container image with `build` subcommand.
-For example, we can build `app.sif` container from the `app.def` definition file as follows:
-
-```sh
-apptainer build <flags> app.sif app.def
-```
-
-We can use the `--build-arg` flag to supply build arguments.
-It will overwrite the default values defined in `%arguments` section.
-
-It is important that Apptainer creates cache and temporary files to sane locations in HPC environments.
-We can modify them using the `APPTAINER_CACHEDIR` and `APPTAINER_TMPDIR` environment variables.
+In HPC environments, we should point Apptainer cache and temporary directories to a sane location by setting the `APPTAINER_CACHEDIR` and `APPTAINER_TMPDIR` environment variables.
+<!-- TODO: define sane location: tmp to fast local disk, cache to projappl -->
 
 
-### Running containers with Apptainer
-We can run the commands within the container using the `exec` subcommand as follows:
+### Running containers
+We run commands within the container using the `apptainer exec` command as follows:
 
 ```sh
 apptainer exec <flags> app.sif <command> <arguments>
@@ -130,6 +115,13 @@ Apptainer will bind mount certain directories by default such as the home direct
 ### Managing containers
 We should place container definitions into a separate repository instead of placing them to the same repository as the application source code.
 The separation makes the separation between the application source code and the container definitions explicit.
+
+<!--
+version controlling container definitions
+versioning containers
+storing containers into container registry
+automatically building containers.
+-->
 
 
 ## Apptainer example
