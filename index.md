@@ -1,35 +1,32 @@
 # Guidelines for containerizing scientific applications for HPC clusters
-## General principles
+## Introduction
 <!-- establish context and prerequisities -->
-These guidelines provide general instructions and concrete examples to containerize scientific applications and manager the containers in consistent manner.
-We assume basic knowledge about Linux operating system and shell scripting, and how to build and installing software on Linux.
+These guidelines provide general instructions and concrete examples to containerize scientific applications and consistently manage the containers.
+We assume basic knowledge about the Linux operating system and shell scripting, and how to build and install software on Linux.
 
 <!-- scientific application -->
-A scientific application consists the application software and various software dependencies.
-We assume that the application has a command line interface and it can be configured via command line options, environment variables, configuration files or some mix of them.
+A scientific application consists of the application software and various software dependencies.
+We assume that the application has a command line interface and it can be configured via command line options, environment variables, configuration files, or some mix of them.
 We focus on scientific applications that run as batch processes on HPC clusters, reading input data from input files and writing output data into output files.
-We assume that the application is developed using version control system such as Git so that we can install specific version of the software.
-We assume that the source-code is hosted and the software releases on the web, for example using a platform like GitHub and GitLab, such that we can download it.
+We assume that the application is developed using a version control system such as Git so that we can install a specific version of the software.
+We assume that the source code is hosted and the software releases on the web, for example using a platform like GitHub and GitLab, such that we can download it.
 
 <!-- container technologies -->
 Apptainer is the primary technology used to run and build containers for HPC clusters.
-Apptainer was formerly known as Singularity, but the project was renamed when it moved under Linux foundation.
-Sylabs maintains another fork of Singularity named SingularityCE which has small implementation differences compared to Apptainer.
-We can also use Docker and Podman to build containers for HPC clusters.
-We cover Apptainer, Docker and Podman.
+Apptainer was formerly known as Singularity, but it was renamed to Apptainer when it moved under the Linux foundation.
+Sylabs maintains another fork of Singularity named SingularityCE, which has minor implementation differences compared to Apptainer.
+The command line interface between Apptainer and Singularity is similar, and we can use them interchangeably.
+Furthermore, we can use Docker to build Docker containers and Podman to build OCI containers that we can run on HPC clusters using Apptainer.
 
 <!-- containerization activities -->
 We break down containerization into three acticities:
 
 1. Defining and building containers of scientific applications for HPC clusters.
-   We explain how to create container definitions using the Apptainer definition file and build them using Apptainer.
-   Furthermore, we show how to define containers using the Dockerfile format and build them using Docker and Podman.
-
 2. Running scientific applications from containers on HPC clusters.
-
 3. Managing container definitions, images and build processes.
-   We cover version controlling container definitions, versioning containers, storing containers into container registry and automatically building containers.
 
+
+## General principles
 <!-- general principles for defining and building containers -->
 General principles defining containers.
 
@@ -47,6 +44,15 @@ Shell commands for building containers are executed with `/bin/sh`.
 
 <!-- installing with package manager steps: upgrade, install packages, clean cache -->
 <!-- installing from source steps:: make temp, download, build, install, clean temp -->
+
+<!--
+We explain how to create container definitions using the Apptainer definition file and build them using Apptainer.
+Furthermore, we show how to define containers using the Dockerfile format and build them using Docker and Podman.
+-->
+
+<!--
+We cover version controlling container definitions, versioning containers, storing containers into container registry and automatically building containers.
+-->
 
 
 ## Defining containers with Apptainer
