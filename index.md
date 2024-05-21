@@ -21,6 +21,8 @@ The command line interface between Apptainer and Singularity is similar, and we 
 Furthermore, we can use Docker to build Docker containers and Podman to build OCI containers that we can run on HPC clusters using Apptainer.
 Internally, Podman uses Buildah to build OCI containers and it is possible to use Buildah directly to build container is necessary.
 
+For complete reference to Apptainer, we recommend the [Apptainer documentation](https://apptainer.org/docs/user/main/index.html).
+
 
 ## General principles
 <!-- containerization activities -->
@@ -32,10 +34,9 @@ We break down containerization into three acticities:
 
 We discuss about the general principles and show concrete examples for each of the activities.
 
-<!-- general principles for defining and building containers -->
-General principles defining containers.
 
-**Defining containers:**
+### Defining containers
+**Definition files:**
 We define containers using definition files.
 
 <!--
@@ -52,11 +53,12 @@ It is best to avoid other keywords to keep containers simple and easier to conve
 
 2. Dockerfile to define containers.
 We can define containers for Docker and Podman using the dockerfile format.
-For complete reference to dockerfile format, we recommend the [official documentation](https://docs.docker.com/reference/dockerfile/).
-We recommend to name containers files with name and extension in lowercase, such as `app.dockefiler`, rather than simply `Dockerfile` because complex scientific software may require multiple container definition files.
+For complete reference to dockerfile format, we recommend the [Dockerfile documentation](https://docs.docker.com/reference/dockerfile/).
+We should name Dockerfiles using the `.dockerfile` extension.
+Avoid naming files as `Dockerfile` because complex scientific software may require multiple container definition files.
 The containers should adhere to the best practices for Apptainer compatibility.
 We recommend primarily using `FROM`, `ARG`, `COPY`, `RUN`, `ENV` and `LABEL` instructions.
-We should not use the `USER` intructions.
+We should not use the `USER` intruction.
 
 **Software location:**
 Install software into `/opt` or `/usr/local` and make it world-readable.
@@ -71,6 +73,9 @@ Alternatively, you can prepend the directory of the executable to path manually 
 **Build scripts:**
 Shell commands for building containers are executed with `/bin/sh`.
 
+If possible, avoid using `%files` or `COPY` to add applications or dependencies to the container.
+Instead download the application in `%post` or `RUN` via the network.
+
 <!--
 installing with package manager steps: upgrade, install packages, clean cache
 installing from source steps:: make temp, download, build, install, clean temp
@@ -78,12 +83,7 @@ We cover version controlling container definitions, versioning containers, stori
 -->
 
 
-## Defining containers with Apptainer
-For complete reference to Apptainer, we recommend the [official documentation](https://apptainer.org/docs/user/main/index.html).
-We can use Apptainer via the `apptainer` command.
-
-
-## Building containers with Apptainer
+### Building containers with Apptainer
 We can build containers from the definition file into container image with `build` subcommand.
 For example, we can build `app.sif` container from the `app.def` definition file as follows:
 
@@ -98,7 +98,7 @@ It is important that Apptainer creates cache and temporary files to sane locatio
 We can modify them using the `APPTAINER_CACHEDIR` and `APPTAINER_TMPDIR` environment variables.
 
 
-## Running containers with Apptainer
+### Running containers with Apptainer
 We can run the commands within the container using the `exec` subcommand as follows:
 
 ```sh
@@ -122,6 +122,11 @@ Instead, write files to the bind mounted directories with write permission.
 Bind mounts have read and write permission by default when permissions are not defined explicitly.
 Input data is read from and output is written into bind mounted directories.
 Apptainer will bind mount certain directories by default such as the home directory (`$HOME`), current working directory and the temporary directory (`/tmp`).
+
+
+### Managing containers
+We should place container definitions into a separate repository instead of placing them to the same repository as the application source code.
+The separation makes the separation between the application source code and the container definitions explicit.
 
 
 ## Apptainer example
