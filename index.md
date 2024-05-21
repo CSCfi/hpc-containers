@@ -53,12 +53,12 @@ It is best to avoid other keywords to keep containers simple and easier to conve
 
 2. Dockerfile to define containers.
 We can define containers for Docker and Podman using the dockerfile format.
-For complete reference to dockerfile format, we recommend the [Dockerfile documentation](https://docs.docker.com/reference/dockerfile/).
 We should name Dockerfiles using the `.dockerfile` extension.
 Avoid naming files as `Dockerfile` because complex scientific software may require multiple container definition files.
 The containers should adhere to the best practices for Apptainer compatibility.
 We recommend primarily using `FROM`, `ARG`, `COPY`, `RUN`, `ENV` and `LABEL` instructions.
 We should not use the `USER` intruction.
+For complete reference to dockerfile format, we recommend the [Dockerfile documentation](https://docs.docker.com/reference/dockerfile/).
 
 **Software location:**
 Install software into `/opt` or `/usr/local` and make it world-readable.
@@ -75,6 +75,9 @@ Shell commands for building containers are executed with `/bin/sh`.
 
 If possible, avoid using `%files` or `COPY` to add applications or dependencies to the container.
 Instead download the application in `%post` or `RUN` via the network.
+
+Avoid using `%runscript`, `%startscript`, `CMD` or `ENTRYPOINT`.
+Instead, use `apptainer exec` to explictly run the application in the container.
 
 <!--
 installing with package manager steps: upgrade, install packages, clean cache
@@ -195,7 +198,7 @@ Average: 2.00
 ```
 
 
-## Dockerfile example
+## Docker example
 We have the following Docker definition file named `app.dockerfile`:
 
 ```dockerfile
@@ -230,20 +233,12 @@ RUN APP_VERSION=0.1.0 && \
     rm -rf /tmp/build
 ```
 
-The containers should adhere to the best practices for Apptainer compatibility.
-We recommend primarily using `FROM`, `ARG`, `COPY`, `RUN`, and `ENV` instructions.
-We should not use the `USER` intructions.
-
-
-## Docker example
-### Building the container
 We can build the container with Docker as follows:
 
 ```sh
 docker build --tag localhost/app:0.1.0 --file app.dockerfile .
 ```
 
-### Converting the container
 Converting Docker container into Apptainer container.
 
 ```sh
@@ -251,7 +246,6 @@ docker save --output app.tar localhost/app:0.1.0
 apptainer build app.sif docker-archive://app.tar
 ```
 
-### Pushing container to container registry
 Pushing to container registry such as GitHub Container Registry.
 
 ```sh
@@ -262,14 +256,13 @@ docker push ghcr.io/<username>/app:0.1.0
 
 
 ## Podman example
-### Building the container
+We use the same `app.dockerfile` as in the Docker example.
 Building container with Podman
 
 ```sh
 podman build --tag localhost/app:0.1.0 --file app.dockerfile .
 ```
 
-### Converting the container
 Converting OCI container into Apptainer container.
 
 ```sh
@@ -277,7 +270,6 @@ podman save --output app.tar localhost/app:0.1.0
 apptainer build app.sif docker-archive://app.tar
 ```
 
-### Pushing containers to container registry
 Pushing to container registry such as GitHub Container Registry.
 
 ```sh
