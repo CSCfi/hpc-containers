@@ -38,6 +38,17 @@ We discuss about the general principles and show concrete examples for each of t
 ### Defining and building containers
 We define containers using definition files.
 
+| Apptainer | Dockerfile | Recommendation |
+| - | - | - |
+| `.def` | `.dockerfile` | File extension |
+| `From` | `FROM` | Use normally |
+| `Bootstrap` | - | Use normaly |
+| `%post` | `RUN` | Use normally |
+| `%environment` | `ENV` | Use to define runtime environment variables |
+| `%arguments` | `ARG` | ... |
+| `%files` | `COPY` | ... |
+| `%labels` | `LABEL` | ... |
+
 <!-- TODO:
 * define build arguments and default values for them
 * copy files from host machine to the container
