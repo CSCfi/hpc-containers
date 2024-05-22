@@ -1,5 +1,6 @@
 FROM ubuntu:22.04
 
+# Install dependencies for building and running sciapp
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get --yes update && \
     apt-get --yes upgrade && \
@@ -17,13 +18,13 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get --yes autoremove && \
     rm -rf /var/lib/apt/lists/*
 
-# Install appdemo v0.1.0
-RUN APP_VERSION=0.1.0 && \
+# Install sciapp
+RUN SCIAPP_VERSION=0.1.0 && \
     mkdir -p /tmp/build && \
     cd /tmp/build && \
-    curl --location --output appdemo.tar.gz https://github.com/jaantollander/appdemo/archive/refs/tags/v${APP_VERSION}.tar.gz && \
-    tar -xf appdemo.tar.gz && \
-    cd appdemo-${APP_VERSION} && \
+    curl --location --output sciapp.tar.gz https://github.com/jaantollander/sciapp/archive/refs/tags/v${SCIAPP_VERSION}.tar.gz && \
+    tar -xf sciapp.tar.gz && \
+    cd sciapp-${SCIAPP_VERSION} && \
     make && \
     mv build/main /usr/local/bin/app && \
     rm -rf /tmp/build

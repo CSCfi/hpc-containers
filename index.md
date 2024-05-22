@@ -1,7 +1,7 @@
 # Guidelines for containerizing scientific applications for HPC clusters
 ## Introduction
 <!-- establish context and prerequisities -->
-These guidelines provide general principles and concrete examples to containerize scientific applications and consistently manage the containers.
+These guidelines provide general principles and concrete examples to containerize scientific applications that are used in HPC clusters.
 We assume basic knowledge about the Linux operating system and shell scripting, and how to build and install software on Linux.
 
 <!-- define the scope of these guidelines -->
@@ -124,9 +124,13 @@ automatically building containers.
 -->
 
 
-## Apptainer example
-In this example, we install the [appdemo](https://github.com/jaantollander/appdemo) to container.
+## Examples overview
+In the following examples, we demonstrate how to install
 
+install the [sciapp](https://github.com/jaantollander/sciapp) to container.
+
+
+## Apptainer example
 We have the following Apptainer definition file named `app.def`:
 
 ```text
@@ -134,6 +138,7 @@ Bootstrap: docker
 From: ubuntu:22.04
 
 %post
+    # Install dependencies for building and running sciapp
     export DEBIAN_FRONTEND=noninteractive && \
     apt-get --yes update && \
     apt-get --yes upgrade && \
@@ -151,13 +156,13 @@ From: ubuntu:22.04
     apt-get --yes autoremove && \
     rm -rf /var/lib/apt/lists/*
 
-    # Install appdemo
-    APP_VERSION=0.1.0 && \
+    # Install sciapp
+    SCIAPP_VERSION=0.1.0 && \
     mkdir -p /tmp/build && \
     cd /tmp/build && \
-    curl --location --output appdemo.tar.gz https://github.com/jaantollander/appdemo/archive/refs/tags/v${APP_VERSION}.tar.gz && \
-    tar -xf appdemo.tar.gz && \
-    cd appdemo-${APP_VERSION} && \
+    curl --location --output sciapp.tar.gz https://github.com/jaantollander/sciapp/archive/refs/tags/v${SCIAPP_VERSION}.tar.gz && \
+    tar -xf sciapp.tar.gz && \
+    cd sciapp-${SCIAPP_VERSION} && \
     make && \
     mv build/main /usr/local/bin/app && \
     rm -rf /tmp/build
@@ -196,6 +201,7 @@ We have the following Docker definition file named `app.dockerfile`:
 ```dockerfile
 FROM ubuntu:22.04
 
+# Install dependencies for building and running sciapp
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get --yes update && \
     apt-get --yes upgrade && \
@@ -213,13 +219,13 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get --yes autoremove && \
     rm -rf /var/lib/apt/lists/*
 
-# Install appdemo v0.1.0
-RUN APP_VERSION=0.1.0 && \
+# Install sciapp
+RUN SCIAPP_VERSION=0.1.0 && \
     mkdir -p /tmp/build && \
     cd /tmp/build && \
-    curl --location --output appdemo.tar.gz https://github.com/jaantollander/appdemo/archive/refs/tags/v${APP_VERSION}.tar.gz && \
-    tar -xf appdemo.tar.gz && \
-    cd appdemo-${APP_VERSION} && \
+    curl --location --output sciapp.tar.gz https://github.com/jaantollander/sciapp/archive/refs/tags/v${SCIAPP_VERSION}.tar.gz && \
+    tar -xf sciapp.tar.gz && \
+    cd sciapp-${SCIAPP_VERSION} && \
     make && \
     mv build/main /usr/local/bin/app && \
     rm -rf /tmp/build
