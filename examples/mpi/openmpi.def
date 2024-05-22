@@ -31,8 +31,10 @@ From: ubuntu:22.04
     curl --location --output openmpi.tar.bz2 ${OPENMPI_URL} && \
     tar -xjf openmpi.tar.bz2 && \
     cd openmpi-${OPENMPI_VERSION} && \
-    ./configure --prefix=/usr && \
+    ./configure --prefix=/usr/local && \
     make -j$(nproc) install
 
+    export PATH=/usr/local/bin:$PATH && \
+    export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH && \
     cd /opt && \
     mpicc -o mpitest mpitest.c
