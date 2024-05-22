@@ -1,0 +1,38 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%files
+    mpitest.c /opt
+
+%post
+    export DEBIAN_FRONTEND=noninteractive && \
+    apt-get --yes update && \
+    apt-get --yes upgrade && \
+    apt-get --yes install \
+        ca-certificates \
+        curl \
+        git \
+        bash \
+        gcc \
+        gfortran \
+        g++ \
+        make \
+        file \
+        bzip2 \
+        && \
+    apt-get --yes clean && \
+    apt-get --yes autoremove && \
+    rm -rf /var/lib/apt/lists/*
+
+    OPENMPI_VERSION=4.1.5 && \
+    OPENMPI_URL=https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-${OPENMPI_VERSION}.tar.bz2 && \
+    mkdir -p /tmp/build && \
+    cd /tmp/build && \
+    curl --location --output openmpi.tar.bz2 ${OPENMPI_URL} && \
+    tar -xjf openmpi.tar.bz2 && \
+    cd openmpi-${OPENMPI_VERSION} && \
+    ./configure --prefix=/usr && \
+    make -j$(nproc) install
+
+    cd /opt && \
+    mpicc -o mpitest mpitest.c
