@@ -37,40 +37,23 @@ We discuss about the general principles and show concrete examples for each of t
 
 ### Defining and building containers
 We define containers using definition files.
+The table below contains recommendations for keeping the container simple, extensible and ensure compatibility between Apptainer, Docker and OCI containers.
+We can define containers for Docker and Podman using the Dockerfile format.
 
-| Apptainer | Dockerfile | Recommendation |
+| [Apptainer](https://apptainer.org/docs/user/main/definition_files.html) | [Dockerfile](https://docs.docker.com/reference/dockerfile/) | Recommendation |
 | - | - | - |
-| `.def` | `.dockerfile` | File extension to use |
+| `.def` | `.dockerfile` | File extension to use for the definition file. Avoid using plain `Dockerfile` because complex applications may require multiple definition files. |
 | `From` | `FROM` | Use normally |
 | `Bootstrap` | - | Use normally |
-| `%post` | `RUN` | Use normally |
+| `%post` | `RUN` | Use normally to run shell commands with `/bin/sh` to build the container. |
 | `%environment` | `ENV` | Use to define runtime environment variables |
-| `%arguments` | `ARG` | ... |
+| `%arguments` | `ARG` | We can use build arguments to specify default software versions when changing the version does not require adding control flow to the build scripts. We can override default values using the `--build-arg` flag for the build command. |
 | `%labels` | `LABEL` | ... |
 | `%files` | `COPY` | Avoid copying files from host to container. Instead download dependencies via the network in `%post` or `RUN`. |
 | `%runscript`, `%startscript` | `CMD`, `ENTRYPOINT` | Avoid using runscripts. Instead, use `apptainer exec` to explictly run commands. |
 
-<!-- TODO:
-* define build arguments and default values for them
-* copy files from host machine to the container
-* run shell commands to build the container
-* define enviroment variables that are available at runtime
--->
-
-1. Apptainer definition files.
-We should name file using the `.def` extension.
-We recommend to primarily use `From`, `Bootstrap`, `%arguments`, `%files`, `%post`, `%environment` and `%labels` keywords.
 It is best to avoid other keywords to keep containers simple and easier to convert to OCI container definitions which we discuss later.
 We can build apptainer containers using `apptainer build`
-
-2. Dockerfile to define containers.
-We can define containers for Docker and Podman using the dockerfile format.
-We should name Dockerfiles using the `.dockerfile` extension.
-Avoid naming files as `Dockerfile` because complex scientific software may require multiple container definition files.
-The containers should adhere to the best practices for Apptainer compatibility.
-We recommend primarily using `FROM`, `ARG`, `COPY`, `RUN`, `ENV` and `LABEL` instructions.
-We should not use the `USER` intruction.
-For complete reference to dockerfile format, we recommend the [Dockerfile documentation](https://docs.docker.com/reference/dockerfile/).
 We can build containers using `docker build` and `podman build`.
 
 Install software into `/opt` or `/usr/local` and make it world-readable.
@@ -80,11 +63,6 @@ If your build creates temporary files to these directories, remove them after th
 We can add executables to path (the `$PATH` environment variable) in few different ways.
 We can create a symbolic link to `/usr/local/bin` which is on the path by default.
 Alternatively, you can prepend the directory of the executable to path manually in the container definition.
-
-Shell commands for building containers are executed with `/bin/sh` by default.
-
-We can use build arguments to specify software versions when changing the version does not require adding control flow to the build scripts.
-We can specify a default value in `%arguments` or `ARG` or using the `--build-arg` flag to supply build arguments which overrides the default values in definition file.
 
 In HPC environments, we should point Apptainer cache and temporary directories to a sane location by setting the `APPTAINER_CACHEDIR` and `APPTAINER_TMPDIR` environment variables.
 <!-- TODO: define sane location: tmp to fast local disk, cache to projappl -->
