@@ -125,13 +125,12 @@ automatically building containers.
 
 
 ## Examples overview
-In the following examples, we demonstrate how to install
-
-install the [sciapp](https://github.com/jaantollander/sciapp) to container.
+In the following examples, we demonstrate how to create a container for a small scientific application called [sciapp](https://github.com/jaantollander/sciapp).
+We install the dependencies to run and build `sciapp` and them we install `sciapp` itself by building it from the source.
 
 
 ## Apptainer example
-We have the following Apptainer definition file named `app.def`:
+Let's start by writing the following Apptainer definition to `app.def` file:
 
 ```text
 Bootstrap: docker
@@ -168,13 +167,14 @@ From: ubuntu:22.04
     rm -rf /tmp/build
 ```
 
-Next, we build the container
+Next, we build the container as follows:
 
 ```sh
 apptainer build app.sif app.def
 ```
 
-Input file `input.txt`
+Once the container is built, we can test it.
+Let's create an input file `input.txt` with the following lines:
 
 ```text
 1.0
@@ -182,21 +182,23 @@ Input file `input.txt`
 3.0
 ```
 
-Now we can run it
+Let's run the containerized application and supply path to the input and output files as arguments.
 
 ```sh
 apptainer exec app.sif app input.txt output.txt
 ```
 
-Output file `output.txt`
+If everything worked correctly, the application produces an output file `output.txt` with the following output:
 
 ```text
 Average: 2.00
 ```
 
+In the next examples, we build Docker container and OCI container with Podman for the same application and convert it to Apptainer container.
+
 
 ## Docker example
-We have the following Docker definition file named `app.dockerfile`:
+Let's start by writing the following Dockerfile to `app.dockerfile` file:
 
 ```dockerfile
 FROM ubuntu:22.04
@@ -231,20 +233,23 @@ RUN SCIAPP_VERSION=0.1.0 && \
     rm -rf /tmp/build
 ```
 
-We can build the container with Docker as follows:
+Next, we build the container with Docker as follows:
 
 ```sh
 docker build --tag localhost/app:0.1.0 --file app.dockerfile .
 ```
 
-Converting Docker container into Apptainer container.
+We can converting the Docker image into Apptainer image by saving the Docker image into an archive and building the Apptainer image from the archive as follows:
 
 ```sh
 docker save --output app.tar localhost/app:0.1.0
 apptainer build app.sif docker-archive://app.tar
 ```
 
-Pushing to container registry such as GitHub Container Registry.
+Now, we can test that the container works as expected in the same way as in the Apptainer example.
+
+Finally, we can push the container image to a container registry.
+For example, we can use GitHub Container Registry (GHCR) as follows:
 
 ```sh
 docker login --username <username> ghcr.io  # will prompt for an access token
@@ -254,21 +259,22 @@ docker push ghcr.io/<username>/app:0.1.0
 
 
 ## Podman example
-We use the same `app.dockerfile` as in the Docker example.
-Building container with Podman
+We use the Dockerfile that we defined in the Docker example.
+We can build the container with Podman as follows:
 
 ```sh
 podman build --tag localhost/app:0.1.0 --file app.dockerfile .
 ```
 
-Converting OCI container into Apptainer container.
+We can converting the OCI image into Apptainer image by saving the OCI image into an archive and building the Apptainer image from the archive as follows:
 
 ```sh
 podman save --output app.tar localhost/app:0.1.0
 apptainer build app.sif docker-archive://app.tar
 ```
 
-Pushing to container registry such as GitHub Container Registry.
+Finally, we can push the container image to a container registry.
+For example, we can use GitHub Container Registry (GHCR) as follows:
 
 ```sh
 podman login --username <username> ghcr.io  # will prompt for an access token
