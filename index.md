@@ -40,14 +40,15 @@ We define containers using definition files.
 
 | Apptainer | Dockerfile | Recommendation |
 | - | - | - |
-| `.def` | `.dockerfile` | File extension |
+| `.def` | `.dockerfile` | File extension to use |
 | `From` | `FROM` | Use normally |
-| `Bootstrap` | - | Use normaly |
+| `Bootstrap` | - | Use normally |
 | `%post` | `RUN` | Use normally |
 | `%environment` | `ENV` | Use to define runtime environment variables |
 | `%arguments` | `ARG` | ... |
-| `%files` | `COPY` | ... |
 | `%labels` | `LABEL` | ... |
+| `%files` | `COPY` | Avoid copying files from host to container. Instead download dependencies via the network in `%post` or `RUN`. |
+| `%runscript`, `%startscript` | `CMD`, `ENTRYPOINT` | Avoid using runscripts. Instead, use `apptainer exec` to explictly run commands. |
 
 <!-- TODO:
 * define build arguments and default values for them
@@ -81,14 +82,6 @@ We can create a symbolic link to `/usr/local/bin` which is on the path by defaul
 Alternatively, you can prepend the directory of the executable to path manually in the container definition.
 
 Shell commands for building containers are executed with `/bin/sh` by default.
-
-Avoid copying files from host to container with `%files` or `COPY`.
-Instead download dependencies via the network in `%post` or `RUN`.
-<!-- TODO: explain why -->
-
-Avoid using runscripts such as `%runscript`, `%startscript`, `CMD` or `ENTRYPOINT`.
-Instead, use `apptainer exec` to explictly run the application in the container.
-<!-- TODO: explain why -->
 
 We can use build arguments to specify software versions when changing the version does not require adding control flow to the build scripts.
 We can specify a default value in `%arguments` or `ARG` or using the `--build-arg` flag to supply build arguments which overrides the default values in definition file.
