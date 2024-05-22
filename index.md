@@ -114,7 +114,7 @@ We install the dependencies to run and build `sciapp` and them we install `sciap
 ## Apptainer example
 Let's start by writing the following Apptainer definition to `app.def` file:
 
-```text
+```sh
 Bootstrap: docker
 From: ubuntu:22.04
 
