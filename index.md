@@ -53,7 +53,7 @@ We can define containers for Docker and Podman using the Dockerfile format.
 | `%runscript`, `%startscript` | `CMD`, `ENTRYPOINT` | Avoid using runscripts. Instead, use `apptainer exec` to explictly run commands. |
 
 It is best to avoid other keywords to keep containers simple and easier to convert to OCI container definitions which we discuss later.
-We can build apptainer containers using `apptainer build`
+We can build apptainer containers using `apptainer build`.
 We can build containers using `docker build` and `podman build`.
 
 Install software into `/opt` or `/usr/local` and make it world-readable.
@@ -239,6 +239,12 @@ docker localhost/app:0.1.0 ghcr.io/<username>/app:0.1.0
 docker push ghcr.io/<username>/app:0.1.0
 ```
 
+We can pull the container with Apptainer as follows:
+
+```sh
+apptainer pull app.sif docker://ghcr.io/<username>/app:0.1.0
+```
+
 
 ## Podman example
 We use the Dockerfile that we defined in the Docker example.
@@ -264,9 +270,7 @@ podman tag localhost/app:0.1.0 ghcr.io/<username>/app:0.1.0
 podman push ghcr.io/<username>/app:0.1.0
 ```
 
-
-## Pulling containers from container registry with Apptainer
-We can pull Docker and OCI containers with Apptainer as follows:
+We can pull the container with Apptainer as follows:
 
 ```sh
 apptainer pull app.sif docker://ghcr.io/<username>/app:0.1.0
