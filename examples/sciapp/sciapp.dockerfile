@@ -20,9 +20,10 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 
 # Install sciapp
 RUN SCIAPP_VERSION=0.1.0 && \
+    SCIAPP_URL=https://github.com/jaantollander/sciapp/archive/refs/tags/v${SCIAPP_VERSION}.tar.gz && \
     mkdir -p /tmp/build && \
     cd /tmp/build && \
-    curl --location --output sciapp.tar.gz https://github.com/jaantollander/sciapp/archive/refs/tags/v${SCIAPP_VERSION}.tar.gz && \
+    curl --location --output sciapp.tar.gz ${SCIAPP_URL} && \
     tar -xf sciapp.tar.gz && \
     cd sciapp-${SCIAPP_VERSION} && \
     make && \
