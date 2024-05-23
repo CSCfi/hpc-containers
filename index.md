@@ -37,6 +37,8 @@ We discuss about the general principles and show concrete examples for each of t
 
 ### Defining and building containers
 We define containers using definition files.
+Container definitions should aim to explicitly define all software dependencies for reproducibility.
+
 The table below contains recommendations for keeping the container simple, extensible and ensure compatibility between Apptainer, Docker and OCI containers.
 We can define containers for Docker and Podman using the Dockerfile format.
 
@@ -64,7 +66,7 @@ Install directories includes `bin` directory for executables and `lib` directory
 [File Hierarchy Standard (FHS)](https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard)
 
 We should avoid creating files to the home directories, `/root` and `/home` because Apptainer mounts them at runtime by default.
-We can create temporary files to temporary directory `/tmp` during build as long as we also remove them.
+We can create temporary files to temporary directory `/tmp` during build as long as we remove them in the end of the build.
 
 We can add executables to path (the `$PATH` environment variable) in few different ways.
 We can create a symbolic link to `/usr/local/bin` which is on the path by default.
@@ -84,17 +86,8 @@ We run commands within the container using the `apptainer exec` command as follo
 apptainer exec <flags> app.sif <command> <arguments>
 ```
 
-We use flags to specify bind mounts and environment variables for the runtime.
-
-Environment variables
-
-* `--env` to set environment variables
-* `--cleanenv` to avoid passing environment variables from the host
-
-Bind mounts
-
-* `--bind` to bind mount directories
-* `--no-home` to disable binding home directory
+We can use `--env` flag to set environment variables and `--cleanenv` to avoid passing environment variables from the host.
+For bind mounts, we can use `--bind` to bind mount directories and `--no-home` to disable binding home directory.
 
 The container filesystem is read-only at runtime, therefore, make sure that your program does not attempt to write files to the container at runtime.
 Instead, write files to the bind mounted directories with write permission.
@@ -185,9 +178,14 @@ If everything worked correctly, the application produces an output file `output.
 Average: 2.00
 ```
 
-In the next examples, we build Docker container and OCI container with Podman for the same application and convert it to Apptainer container.
+We can store Apptainer images to container registries that support [ORAS](https://oras.land/) such as GitHub Container Registry as follows:
 
-<!-- TODO: oras and ghcr for storing apptainer images -->
+```sh
+apptainer registry login --username <username> oras://ghcr.io  # will prompt for an access token
+apptainer push app.sif oras://<username>/app:0.1.0
+```
+
+In the next examples, we build Docker container and OCI container with Podman for the same application and convert it to Apptainer container.
 
 
 ## Docker example
