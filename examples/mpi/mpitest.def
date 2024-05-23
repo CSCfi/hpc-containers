@@ -1,0 +1,9 @@
+From: openmpi.sif
+Bootstrap: localimage
+
+%files
+    mpitest.c /opt
+
+%post
+    cd /opt && \
+    mpicc -o mpitest mpitest.c
