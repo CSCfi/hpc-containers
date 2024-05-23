@@ -19,7 +19,7 @@ Apptainer was formerly known as Singularity, but it was renamed to Apptainer whe
 Sylabs maintains another fork of Singularity named SingularityCE, which has minor implementation differences compared to Apptainer.
 The command line interface between Apptainer and Singularity is similar, and we can use them interchangeably.
 Furthermore, we can use Docker to build Docker containers and Podman to build OCI containers that we can run on HPC clusters using Apptainer.
-Internally, Podman uses Buildah to build OCI containers and it is possible to use Buildah directly to build container is necessary.
+Internally, Podman uses Buildah to build [OCI](https://opencontainers.org/) containers and it is possible to use Buildah directly to build container is necessary.
 
 For complete reference to Apptainer, we recommend the [Apptainer documentation](https://apptainer.org/docs/user/main/index.html).
 
@@ -182,7 +182,13 @@ We can store Apptainer images to container registries that support [ORAS](https:
 
 ```sh
 apptainer registry login --username <username> oras://ghcr.io  # will prompt for an access token
-apptainer push app.sif oras://<username>/app:0.1.0
+apptainer push app.sif oras://ghcr.io/<username>/app:0.1.0
+```
+
+We can pull the container with Apptainer as follows:
+
+```sh
+apptainer pull app.sif oras://ghcr.io/<username>/app:0.1.0
 ```
 
 In the next examples, we build Docker container and OCI container with Podman for the same application and convert it to Apptainer container.
