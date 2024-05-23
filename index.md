@@ -48,24 +48,33 @@ We can define containers for Docker and Podman using the Dockerfile format.
 | `%post` | `RUN` | Use normally to run shell commands with `/bin/sh` to build the container. |
 | `%environment` | `ENV` | Use to define runtime environment variables |
 | `%arguments` | `ARG` | We can use build arguments to specify default software versions when changing the version does not require adding control flow to the build scripts. We can override default values using the `--build-arg` flag for the build command. |
-| `%labels` | `LABEL` | ... |
+| `%labels` | `LABEL` | Add metadata to container as name-value pairs. |
 | `%files` | `COPY` | Avoid copying files from host to container. Instead download dependencies via the network in `%post` or `RUN`. |
 | `%runscript`, `%startscript` | `CMD`, `ENTRYPOINT` | Avoid using runscripts. Instead, use `apptainer exec` to explictly run commands. |
+| - | `USER` | Do not use. It can lead to access permission issues. |
+| - | `SHELL` | Do not use. It is not part of OCI specification. |
 
 It is best to avoid other keywords to keep containers simple and easier to convert to OCI container definitions which we discuss later.
-We can build apptainer containers using `apptainer build`.
-We can build containers using `docker build` and `podman build`.
 
-Install software into `/opt` or `/usr/local` and make it world-readable.
-Avoid creating files to the home directories, `/root` and `/home`, or temporary directory `/tmp`.
-If your build creates temporary files to these directories, remove them after the build.
+<!-- TODO: base images and package managers -->
+
+We can install software into `/opt`, `/usr` or `/usr/local` depending on our needs.
+We need to make files world-readable.
+Install directories includes `bin` directory for executables and `lib` directory for shared libraries.
+[File Hierarchy Standard (FHS)](https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard)
+
+We should avoid creating files to the home directories, `/root` and `/home` because Apptainer mounts them at runtime by default.
+We can create temporary files to temporary directory `/tmp` during build as long as we also remove them.
 
 We can add executables to path (the `$PATH` environment variable) in few different ways.
 We can create a symbolic link to `/usr/local/bin` which is on the path by default.
 Alternatively, you can prepend the directory of the executable to path manually in the container definition.
 
 In HPC environments, we should point Apptainer cache and temporary directories to a sane location by setting the `APPTAINER_CACHEDIR` and `APPTAINER_TMPDIR` environment variables.
-<!-- TODO: define sane location: tmp to fast local disk, cache to projappl -->
+For example, we can set cache directory to a shared location if we are working in a project and temporary directory to fast local disk.
+
+We can build apptainer containers using `apptainer build`.
+We can build containers using `docker build` and `podman build`.
 
 
 ### Running containers
@@ -177,6 +186,8 @@ Average: 2.00
 ```
 
 In the next examples, we build Docker container and OCI container with Podman for the same application and convert it to Apptainer container.
+
+<!-- TODO: oras and ghcr for storing apptainer images -->
 
 
 ## Docker example
