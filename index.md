@@ -4,7 +4,7 @@
 These guidelines provide general principles and concrete examples to containerize scientific applications that are used in HPC clusters.
 We assume basic knowledge about the Linux operating system and shell scripting, and how to build and install software on Linux.
 
-<!-- define the scope of these guidelines -->
+<!-- define the scope and goals of these guidelines -->
 
 <!-- scientific application -->
 A scientific application consists of the application software and various software dependencies.
@@ -60,17 +60,14 @@ It is best to avoid other keywords to keep containers simple and easier to conve
 
 <!-- TODO: base images and package managers -->
 
-We can install software into `/opt`, `/usr` or `/usr/local` depending on our needs.
-We need to make files world-readable.
-Install directories includes `bin` directory for executables and `lib` directory for shared libraries.
-[File Hierarchy Standard (FHS)](https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard)
-
-We should avoid creating files to the home directories, `/root` and `/home` because Apptainer mounts them at runtime by default.
-We can create temporary files to temporary directory `/tmp` during build as long as we remove them in the end of the build.
-
-We can add executables to path (the `$PATH` environment variable) in few different ways.
-We can create a symbolic link to `/usr/local/bin` which is on the path by default.
-Alternatively, you can prepend the directory of the executable to path manually in the container definition.
+- Install software in either `/opt`, `/usr`, or `/usr/local` based on your specific requirements.
+- The convention is to place executables to `bin` directory and shared libraries to `lib` directory.
+- Move and link executables to `/usr/local/bin` or `/usr/bin` directory which are on the default path and shared libraries to `/usr/local/lib` or `/usr/lib` directory which are on the default path.
+- Otherwise, you must modify the `PATH` and `LD_LIBRARY_PATH` environment variables.
+- For more details about Linux file system convetions, see [File Hierarchy Standard (FHS)](https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard).
+- Ensure all installed files are world-readable.
+- Do not create files in `/root` or `/home` directories, as Apptainer mounts them at runtime by default.
+- For temporary files during the build process, use the `/tmp` directory and ensure these files are removed after the build completes.
 
 In HPC environments, we should point Apptainer cache and temporary directories to a sane location by setting the `APPTAINER_CACHEDIR` and `APPTAINER_TMPDIR` environment variables.
 For example, we can set cache directory to a shared location if we are working in a project and temporary directory to fast local disk.
