@@ -1,45 +1,42 @@
 # Guidelines for containerizing scientific applications for HPC clusters
 ## Introduction
-<!-- establish context and prerequisities -->
-These guidelines provide general principles and concrete examples to containerize scientific applications that are used in HPC clusters.
-We assume basic knowledge about the Linux operating system and shell scripting, and how to build and install software on Linux.
+These guidelines provide general principles and concrete examples for containerizing scientific applications used in HPC clusters.
+This contrasts with containers for network applications used in cloud environments.
+We assume basic knowledge of the Linux operating system, shell scripting, and software building and installation on Linux.
 
-<!-- define the scope and goals of these guidelines -->
-
-<!-- scientific application -->
 A scientific application consists of the application software and various software dependencies.
-We assume that the application has a command line interface and it can be configured via command line options, environment variables, configuration files, or some mix of them.
-We focus on scientific applications that run as batch processes on HPC clusters, reading input data from input files and writing output data into output files.
-We assume that the application is developed using a version control system such as Git so that we can install a specific version of the software.
-We assume that the source code is hosted and the software releases on the web, for example using a platform like GitHub and GitLab, such that we can download it.
+We assume that the application has a [command line interface](https://clig.dev/) and can be configured via command line options, environment variables, configuration files, or a combination of these.
+Our focus is on scientific applications that run as batch processes on HPC clusters, reading input data from input files and writing output data to output files.
 
-<!-- container technologies -->
+We assume that the application is developed using a version control system, such as Git, and follows a systematic versioning scheme, such as [Semantic Versioning](https://semver.org/), to install a specific version of the software.
+Additionally, we assume that the source code is hosted and software releases are available on the web, using platforms like GitHub or GitLab, enabling easy download.
+
 Apptainer is the primary technology used to run and build containers for HPC clusters.
-Apptainer was formerly known as Singularity, but it was renamed to Apptainer when it moved under the Linux foundation.
-Sylabs maintains another fork of Singularity named SingularityCE, which has minor implementation differences compared to Apptainer.
-The command line interface between Apptainer and Singularity is similar, and we can use them interchangeably.
-Furthermore, we can use Docker to build Docker containers and Podman to build OCI containers that we can run on HPC clusters using Apptainer.
-Internally, Podman uses Buildah to build [OCI](https://opencontainers.org/) containers and it is possible to use Buildah directly to build container is necessary.
+Formerly known as Singularity, it was renamed Apptainer when it moved under the Linux Foundation.
+Sylabs maintains a fork of Singularity named SingularityCE, which has minor implementation differences compared to Apptainer.
+The command line interfaces of Apptainer and Singularity are similar and can be used interchangeably.
 
-For complete reference to Apptainer, we recommend the [Apptainer documentation](https://apptainer.org/docs/user/main/index.html).
+Furthermore, Docker can be used to build Docker containers, and Podman can be used to build OCI containers that run on HPC clusters using Apptainer.
+Internally, Podman uses Buildah to build [OCI](https://opencontainers.org/) containers, and it is possible to use Buildah directly if necessary.
+
+We build on top on the excellent [Apptainer documentation](https://apptainer.org/docs/user/main/index.html).
 
 
 ## General principles
-<!-- containerization activities -->
 We break down containerization into three acticities:
 
 1. Defining and building containers of scientific applications for HPC clusters.
 2. Running scientific applications from containers on HPC clusters.
 3. Managing container definitions, images and build processes.
 
-We discuss about the general principles and show concrete examples for each of the activities.
+We will discuss the general principles and provide concrete examples for each of these activities.
 
 
 ### Defining and building containers
 We define containers using definition files.
-Container definitions should aim to explicitly define all software dependencies for reproducibility.
+Container definitions should explicitly define all software dependencies to ensure reproducibility.
 
-The table below contains recommendations for keeping the container simple, extensible and ensure compatibility between Apptainer, Docker and OCI containers.
+The table below contains recommendations for keeping containers simple, extensible, and compatible with Apptainer, Docker, and OCI containers.
 We can define containers for Docker and Podman using the Dockerfile format.
 
 | [Apptainer](https://apptainer.org/docs/user/main/definition_files.html) | [Dockerfile](https://docs.docker.com/reference/dockerfile/) | Recommendation |
@@ -105,12 +102,14 @@ automatically building containers.
 -->
 
 
-## Examples overview
-In the following examples, we demonstrate how to create a container for a small scientific application called [sciapp](https://github.com/jaantollander/sciapp).
+## Example: Containerizing a scientific application
+In the following examples, we demonstrate how to create and run a container for a small scientific application called [sciapp](https://github.com/jaantollander/sciapp).
+We demonstrate Apptainer, Docker and Podman.
 We install the dependencies to run and build `sciapp` and them we install `sciapp` itself by building it from the source.
+We also show how to push and pull container images to a container registry such as [GitHub Container Registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
 
 
-## Apptainer example
+### Apptainer
 Let's start by writing the following Apptainer definition to `app.def` file:
 
 ```sh
@@ -192,7 +191,7 @@ apptainer pull app.sif oras://ghcr.io/<username>/app:0.1.0
 In the next examples, we build Docker container and OCI container with Podman for the same application and convert it to Apptainer container.
 
 
-## Docker example
+### Docker
 Let's start by writing the following Dockerfile to `app.dockerfile` file:
 
 ```dockerfile
@@ -260,7 +259,7 @@ apptainer pull app.sif docker://ghcr.io/<username>/app:0.1.0
 ```
 
 
-## Podman example
+### Podman
 We use the Dockerfile that we defined in the Docker example.
 We can build the container with Podman as follows:
 
