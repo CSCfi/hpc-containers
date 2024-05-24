@@ -57,14 +57,19 @@ It is best to avoid other keywords to keep containers simple and easier to conve
 
 <!-- TODO: base images and package managers -->
 
-- Install software in either `/opt`, `/usr`, or `/usr/local` based on your specific requirements.
-- The convention is to place executables to `bin` directory and shared libraries to `lib` directory.
-- Move and link executables to `/usr/local/bin` or `/usr/bin` directory which are on the default path and shared libraries to `/usr/local/lib` or `/usr/lib` directory which are on the default path.
-- Otherwise, you must modify the `PATH` and `LD_LIBRARY_PATH` environment variables.
-- For more details about Linux file system convetions, see [File Hierarchy Standard (FHS)](https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard).
-- Ensure all installed files are world-readable.
-- Do not create files in `/root` or `/home` directories, as Apptainer mounts them at runtime by default.
-- For temporary files during the build process, use the `/tmp` directory and ensure these files are removed after the build completes.
+The following table explains our options where to install software.
+
+| Directory | Recommendation |
+| - | - |
+| `/usr` | Default directory where package managers install software. Executables and libraries are on the path by default. |
+| `/usr/local` | We can install software to `/usr/local`. Executables and libraries are on the path by default. |
+| `/opt` | We can install software to `/opt` but it requires modifying `PATH` and `LD_LIBRARY_PATH` for build and runtime. |
+| `/tmp` | Use `/tmp` for temporary files during the build process and ensure these files are removed after the build completes. |
+| `/home`, `/root` | Avoid creating files to home directories, as Apptainer mounts them at runtime by default. |
+
+Given installation directory `$PREFIX`, the convention is to place executables to `$PREFIX/bin` directory, shared libraries to `$PREFIX/lib` directory, configurations `$PREFIX/etc` and headers to `$PREFIX/include`.
+Ensure all installed files are world-readable.
+For more details about Linux file system convetions, see [File Hierarchy Standard (FHS)](https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard).
 
 In HPC environments, we should point Apptainer cache and temporary directories to a sane location by setting the `APPTAINER_CACHEDIR` and `APPTAINER_TMPDIR` environment variables.
 For example, we can set cache directory to a shared location if we are working in a project and temporary directory to fast local disk.
