@@ -36,6 +36,17 @@ We will discuss the general principles and provide concrete examples for each of
 We define containers using definition files.
 Container definitions should explicitly define all software dependencies to ensure reproducibility.
 
+| Base image | Package manager |
+| - | - |
+| [ubuntu](https://hub.docker.com/_/ubuntu) | APT |
+| [debian](https://hub.docker.com/_/debian) | APT |
+| [opensuse/Leap](https://hub.docker.com/r/opensuse/leap) | Zypper |
+| [rockylinux](https://hub.docker.com/_/rockylinux) | DNF |
+| [centos](https://hub.docker.com/_/centos) | DNF |
+| [almalinux](https://hub.docker.com/_/almalinux) | DNF |
+| [redhat/ubi8](https://hub.docker.com/r/redhat/ubi8) | DNF |
+| [redhat/ubi9](https://hub.docker.com/r/redhat/ubi9) | DNF |
+
 The table below contains recommendations for keeping containers simple, extensible, and compatible with Apptainer, Docker, and OCI containers.
 We can define containers for Docker and Podman using the Dockerfile format.
 
@@ -55,8 +66,6 @@ We can define containers for Docker and Podman using the Dockerfile format.
 
 It is best to avoid other keywords to keep containers simple and easier to convert to OCI container definitions which we discuss later.
 
-<!-- TODO: base images and package managers -->
-
 The following table explains our options where to install software.
 
 | Directory | Recommendation |
@@ -67,7 +76,7 @@ The following table explains our options where to install software.
 | `/tmp` | Use `/tmp` for temporary files during the build process and ensure these files are removed after the build completes. |
 | `/home`, `/root` | Avoid creating files to home directories, as Apptainer mounts them at runtime by default. |
 
-Given installation directory `$PREFIX`, the convention is to place executables to `$PREFIX/bin` directory, shared libraries to `$PREFIX/lib` directory, configurations `$PREFIX/etc` and headers to `$PREFIX/include`.
+Given installation directory `$INSTALL_DIR`, the convention is to place executables to `$INSTALL_DIR/bin` directory, shared libraries to `$INSTALL_DIR/lib` directory, configurations `$INSTALL_DIR/etc` and headers to `$INSTALL_DIR/include`.
 Ensure all installed files are world-readable.
 For more details about Linux file system convetions, see [File Hierarchy Standard (FHS)](https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard).
 
