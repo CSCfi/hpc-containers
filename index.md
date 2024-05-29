@@ -40,7 +40,7 @@ Container definitions should explicitly define all software dependencies to ensu
 | - | - |
 | [ubuntu](https://hub.docker.com/_/ubuntu) | APT |
 | [debian](https://hub.docker.com/_/debian) | APT |
-| [opensuse/Leap](https://hub.docker.com/r/opensuse/leap) | Zypper |
+| [opensuse/leap](https://hub.docker.com/r/opensuse/leap) | Zypper |
 | [rockylinux](https://hub.docker.com/_/rockylinux) | DNF |
 | [centos](https://hub.docker.com/_/centos) | DNF |
 | [almalinux](https://hub.docker.com/_/almalinux) | DNF |
