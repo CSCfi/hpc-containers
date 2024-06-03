@@ -14,6 +14,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     rm -rf /var/lib/apt/lists/*
 ```
 
+
 Zypper
 
 ```dockerfile
@@ -24,8 +25,31 @@ RUN zypper --non-interactive install \
     zypper --non-interactive clean --all && \
 ```
 
+
 Autotools
 
 ```dockerfile
-#TODO
+# TODO
+```
+
+
+Cmake
+
+```dockerfile
+# TODO
+```
+
+
+Pip (system python)
+
+```dockerfile
+RUN pip3 install --no-cache-dir --upgrade pip && \
+    pip3 install --no-cache-dir numpy
+```
+
+Pip (custom python)
+
+```dockerfile
+RUN python3.11 -m pip install --no-cache-dir --upgrade pip && \
+    python3.11 -m pip install --no-cache-dir numpy
 ```
