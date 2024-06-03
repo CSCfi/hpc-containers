@@ -40,16 +40,9 @@ Cmake
 ```
 
 
-Pip (system python)
+Pip
 
 ```dockerfile
-RUN pip3 install --no-cache-dir --upgrade pip && \
-    pip3 install --no-cache-dir numpy
-```
-
-Pip (custom python)
-
-```dockerfile
-RUN python3.11 -m pip install --no-cache-dir --upgrade pip && \
-    python3.11 -m pip install --no-cache-dir numpy
+RUN python3 -m pip install --no-cache-dir --upgrade pip && \
+    python3 -m pip install --no-cache-dir numpy
 ```
