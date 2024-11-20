@@ -48,7 +48,7 @@ Also, loading a single large file requires fewer file system operations, leading
 
 
 ## General principles
-We break down containerization into three acticities:
+We break down containerization into three activities:
 
 1. Defining and building containers of scientific applications for HPC clusters.
 2. Running scientific applications from containers on HPC clusters.
